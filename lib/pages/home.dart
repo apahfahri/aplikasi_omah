@@ -1,8 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-
-
 class Home extends StatefulWidget {
   @override
   _HomeState createState() => _HomeState();
@@ -14,26 +12,64 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
+      appBar: AppBar(
+            // title: const Text('Hai Zia'),
+            title: const Column(
+              children: [
+                Text(
+                  'Selamat Datang',
+                  style: TextStyle(
+                    color: Colors.black45,
+                    fontSize: 14
+                  ),
+                ),
+                Text(
+                  'Zia',
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 18
+                  ),
+                ),
+              ],
+            ),
+          ),
+          drawer: Drawer(
+            child: ListView(
+              children: <Widget>[
+                DrawerHeader(
+                  decoration: BoxDecoration(color: Colors.white),
+                  child: Text('Header'),
+                  ),
+                  ListTile(
+                    leading: Icon(Icons.home),
+                    title: const Text('Home'),
+                    onTap: () {
+                      //aksi sesuai
+                    },
+                  ),
+                  ListTile(
+                    leading: Icon(Icons.settings),
+                    title: const Text('Settings'),
+                    onTap: () {
+                      //aksi sesuai
+                    },
+                  ),
+                  ListTile(
+                    leading: Icon(Icons.logout),
+                    title: const Text('Logout'),
+                    onTap: () {
+                      //aksi sesuai
+                    },
+                  ),
+              ],
+            ),
+            
+          ),
       body: SafeArea(
         child: SingleChildScrollView(
           padding: EdgeInsets.symmetric(horizontal: 20,vertical: 20),
           child: Column(
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text("Welcome,",style: TextStyle(fontSize: 16,fontWeight: FontWeight.w500,color: Colors.grey[600]),),
-                      Text("John",style: TextStyle(fontSize: 22,fontWeight: FontWeight.w500,color: Colors.grey[700]),)
-                    ],
-                  ),
-                  Icon(Icons.menu)
-                ],
-              ),
-              SizedBox(height:40),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
@@ -55,6 +91,7 @@ class _HomeState extends State<Home> {
                 buildItemMenu("assets/images/powder.png", "Powder Wash"),
               ],),
               SizedBox(height: 20,),
+              
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -114,6 +151,7 @@ class _HomeState extends State<Home> {
           ),
         ),
       ),
+      
     );
   }
 
