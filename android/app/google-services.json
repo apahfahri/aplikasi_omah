@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "933707774940",
+    "project_id": "aplikasi-omah",
+    "storage_bucket": "aplikasi-omah.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:933707774940:android:79d41406193eb8a5a56d19",
+        "android_client_info": {
+          "package_name": "com.aplikasi_omah"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCHeLJfhVEl5cufsgfVrynxyXQhovGrcus"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

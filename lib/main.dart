@@ -1,6 +1,17 @@
+import 'package:aplikasi_omah/model/splash_screen.dart';
+import 'package:aplikasi_omah/pages/home.dart';
+import 'package:aplikasi_omah/pages/iklan.dart';
+import 'package:aplikasi_omah/pages/login.dart';
+import 'package:aplikasi_omah/pages/register.dart';
+import 'package:aplikasi_omah/util/firebase_options.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   runApp(const MainApp());
 }
 
@@ -9,12 +20,22 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: Scaffold(
-        body: Center(
-          child: Text('Hello World!'),
-        ),
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      title: 'Omah Laundry APP',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+        visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
+      // home: Home(),
+      initialRoute: 'splash_screen',
+        routes: {
+          'splash_screen' : (context) => SplashScreen(),
+          'iklan_screen' : (context) => Iklan(),
+          'login_screen' : (context) => Login(),
+          'register_screen' : (context) => Register(),
+          'home_screen' : (context) => Home(),
+        },
     );
   }
 }
