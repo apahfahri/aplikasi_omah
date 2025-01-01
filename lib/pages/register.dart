@@ -1,4 +1,5 @@
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:aplikasi_omah/util/fire_auth.dart';
+import 'package:aplikasi_omah/util/validator.dart';
 import 'package:flutter/material.dart';
 
 class Register extends StatefulWidget {
@@ -9,11 +10,22 @@ class Register extends StatefulWidget {
 }
 
 class _RegisterState extends State<Register> {
-  final _auth = FirebaseAuth.instance;
+  final registerFormKey = GlobalKey<FormState>();
 
+  final TextEditingController nameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-  final TextEditingController confirmPasswordController = TextEditingController();
+  final TextEditingController confirmPasswordController =
+      TextEditingController();
+  final TextEditingController roleController = TextEditingController();
+
+  final focusName = FocusNode();
+  final focusEmail = FocusNode();
+  final focusPassword = FocusNode();
+  final focusConfirmPassword = FocusNode();
+  final focusRole = FocusNode();
+
+  bool isProccess = false;
 
   @override
   Widget build(BuildContext context) {
@@ -40,42 +52,70 @@ class _RegisterState extends State<Register> {
                     ),
                   ),
                   const SizedBox(height: 40),
-                  TextField(
-                    controller: emailController,
-                    keyboardType: TextInputType.emailAddress,
-                    decoration: InputDecoration(
-                      hintText: 'Email atau username',
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8.0),
-                      ),
-                      filled: true,
-                      fillColor: Colors.white,
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-                  TextField(
-                    controller: passwordController,
-                    obscureText: true,
-                    decoration: InputDecoration(
-                      hintText: 'Password',
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8.0),
-                      ),
-                      filled: true,
-                      fillColor: Colors.white,
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-                  TextField(
-                    controller: confirmPasswordController,
-                    obscureText: true,
-                    decoration: InputDecoration(
-                      hintText: 'Konfirmasi Password',
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8.0),
-                      ),
-                      filled: true,
-                      fillColor: Colors.white,
+                  Form(
+                    key: registerFormKey,
+                    child: Column(
+                      children: [
+                        TextFormField(
+                          controller: nameController,
+                          keyboardType: TextInputType.name,
+                          validator: (value) =>
+                              Validator.validateName(name: value),
+                          decoration: InputDecoration(
+                            hintText: 'Username',
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8.0),
+                            ),
+                            filled: true,
+                            fillColor: Colors.white,
+                          ),
+                        ),
+                        const SizedBox(height: 40),
+                        TextFormField(
+                          controller: emailController,
+                          keyboardType: TextInputType.emailAddress,
+                          validator: (value) =>
+                              Validator.validateEmail(email: value),
+                          decoration: InputDecoration(
+                            hintText: 'Email',
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8.0),
+                            ),
+                            filled: true,
+                            fillColor: Colors.white,
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+                        TextFormField(
+                          controller: passwordController,
+                          obscureText: true,
+                          validator: (value) =>
+                              Validator.validatePassword(password: value),
+                          decoration: InputDecoration(
+                            hintText: 'Password',
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8.0),
+                            ),
+                            filled: true,
+                            fillColor: Colors.white,
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+                        TextFormField(
+                          controller: confirmPasswordController,
+                          obscureText: true,
+                          validator: (value) =>
+                              Validator.validatePassword(password: value),
+                          decoration: InputDecoration(
+                            hintText: 'Konfirmasi Password',
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8.0),
+                            ),
+                            filled: true,
+                            fillColor: Colors.white,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                   const SizedBox(height: 20),
@@ -91,40 +131,53 @@ class _RegisterState extends State<Register> {
                     ),
                   ),
                   const SizedBox(height: 30),
-                  SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.blue,
-                        padding: const EdgeInsets.symmetric(vertical: 16.0),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8.0),
+                  isProccess
+                      ? const CircularProgressIndicator()
+                      : SizedBox(
+                          width: double.infinity,
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.blue,
+                              padding:
+                                  const EdgeInsets.symmetric(vertical: 16.0),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8.0),
+                              ),
+                            ),
+                            onPressed: () async {
+                              setState(() {
+                                isProccess = true;
+                              });
+                              try {
+                                if (registerFormKey.currentState!.validate()) {
+                                  final newUser =
+                                      await FireAuth.registerUsingEmailPassword(
+                                          name: nameController.text,
+                                          email: emailController.text,
+                                          password: passwordController.text);
+                                  
+                                  setState(() {
+                                    isProccess = false;
+                                  });
+
+                                  // ignore: unnecessary_null_comparison
+                                  if (newUser != null) {
+                                    Navigator.of(context).pushNamedAndRemoveUntil('login_screen', ModalRoute.withName('/'));
+                                  }
+                                }
+                              } catch (e) {
+                                print(e);
+                              }
+                            },
+                            child: const Text(
+                              'Daftar',
+                              style: TextStyle(
+                                fontSize: 16,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
                         ),
-                      ),
-                      onPressed: () async {
-                        try {
-                          final newUser =
-                              await _auth.createUserWithEmailAndPassword(
-                                  email: emailController.text,
-                                  password: passwordController.text);
-                          // ignore: unnecessary_null_comparison
-                          if (newUser != null) {
-                            Navigator.pushNamed(context, 'login_screen');
-                          }
-                        } 
-                        catch (e) {
-                          print(e);
-                        }
-                      },
-                      child: const Text(
-                        'Daftar',
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
-                  ),
                 ],
               ),
             ),
