@@ -1,3 +1,5 @@
+import 'package:aplikasi_omah/admin/dashboard.dart';
+import 'package:aplikasi_omah/kurir/kurir_home.dart';
 import 'package:aplikasi_omah/model/splash_screen.dart';
 import 'package:aplikasi_omah/pages/home.dart';
 import 'package:aplikasi_omah/pages/iklan.dart';
@@ -35,6 +37,8 @@ class MainApp extends StatelessWidget {
           'login_screen' : (context) => Login(),
           'register_screen' : (context) => Register(),
           'home_screen' : (context) => Home(),
+          'admin_screen' : (context) => Dashboard(),
+          'kurir_screen' : (context) => KurirHome(),
         },
     );
   }
