@@ -20,6 +20,8 @@ Future<void> main() async {
 class MainApp extends StatelessWidget {
   const MainApp({super.key});
 
+  
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -36,7 +38,7 @@ class MainApp extends StatelessWidget {
           'iklan_screen' : (context) => Iklan(),
           'login_screen' : (context) => Login(),
           'register_screen' : (context) => Register(),
-          'home_screen' : (context) => Home(),
+          // 'home_screen' : (context) => Home(),
           'admin_screen' : (context) => Dashboard(),
           'kurir_screen' : (context) => KurirHome(),
         },
