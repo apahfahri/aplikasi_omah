@@ -1,3 +1,4 @@
+import 'package:aplikasi_omah/pages/home.dart';
 import 'package:aplikasi_omah/util/fire_auth.dart';
 import 'package:aplikasi_omah/util/role_manage.dart';
 import 'package:aplikasi_omah/util/validator.dart';
@@ -30,7 +31,21 @@ class _LoginState extends State<Login> {
 
     if (user != null) {
       String? page = await RoleManager.getUserRole(user.uid);
-      Navigator.of(context).pushReplacementNamed('${page}_screen');
+      switch (page) {
+        case 'home':
+          Navigator.of(context).pushReplacement(
+              MaterialPageRoute(builder: (context) => Home(user: user)));
+          break;
+        case 'admin':
+          Navigator.of(context).pushReplacementNamed('admin_screen');
+          // MaterialPageRoute(builder: (context) => Home(user: user));
+          break;
+        case 'kurir':
+          Navigator.of(context).pushReplacementNamed('kurir_screen');
+          // MaterialPageRoute(builder: (context) => Home(user: user));
+          break;
+        default:
+      }
     }
     return firebaseApp;
   }
@@ -160,9 +175,33 @@ class _LoginState extends State<Login> {
                                           });
 
                                           if (user != null) {
-                                            String? page = await RoleManager.getUserRole(user.uid);
-                                            Navigator.pushReplacementNamed(
-                                                context, '${page}_screen');
+                                            String? page =
+                                                await RoleManager.getUserRole(
+                                                    user.uid);
+                                            switch (page) {
+                                              case 'home':
+                                                Navigator.of(context)
+                                                    .pushReplacement(
+                                                        MaterialPageRoute(
+                                                            builder: (context) =>
+                                                                Home(
+                                                                    user:
+                                                                        user)));
+                                                break;
+                                              case 'admin':
+                                                Navigator.of(context)
+                                                    .pushReplacementNamed(
+                                                        'admin_screen');
+                                                // MaterialPageRoute(builder: (context) => Home(user: user));
+                                                break;
+                                              case 'kurir':
+                                                Navigator.of(context)
+                                                    .pushReplacementNamed(
+                                                        'kurir_screen');
+                                                // MaterialPageRoute(builder: (context) => Home(user: user));
+                                                break;
+                                              default:
+                                            }
                                           }
                                         }
                                       } catch (e) {
