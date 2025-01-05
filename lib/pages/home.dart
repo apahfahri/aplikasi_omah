@@ -1,10 +1,11 @@
+// ignore_for_file: library_private_types_in_public_api
+
 import 'dart:convert';
 
 import 'package:aplikasi_omah/pages/keranjang.dart';
 import 'package:aplikasi_omah/util/ETTER/model/pesanan_model.dart';
 import 'package:aplikasi_omah/util/ETTER/restapi/restapi.dart';
 import 'package:aplikasi_omah/util/fire_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -28,17 +29,18 @@ class _HomeState extends State<Home> {
   List data = [];
   List<PesananModel> pesanan = [];
 
-  selectAll() async {
-    data = jsonDecode(await ds.selectAll(token, project, 'pesanan', appid));
-    pesanan = data.map((e) => PesananModel.fromJson(e)).toList();
+  // selectAll() async {
+  //   data = jsonDecode(await ds.selectAll(token, project, 'pesanan', appid));
+  //   pesanan = data.map((e) => PesananModel.fromJson(e)).toList();
 
-    setState(() {
-      pesanan = pesanan;
-    });
-  }
+  //   setState(() {
+  //     pesanan = pesanan;
+  //   });
+  // }
 
-  selectName(dynamic field, dynamic value) async{
-    data = jsonDecode(await ds.selectWhereLike(token, project, 'pesanan', appid, field, value));
+  selectOne() async {
+    data = jsonDecode(await ds.selectWhere(token, project, 'pesanan', appid,
+        'pelanggan', currentUser.displayName.toString()));
     pesanan = data.map((e) => PesananModel.fromJson(e)).toList();
 
     setState(() {
@@ -48,15 +50,14 @@ class _HomeState extends State<Home> {
 
   Future reloadData(dynamic valye) async {
     setState(() {
-      selectAll();
+      selectOne();
     });
   }
 
   @override
   void initState() {
     currentUser = widget.user;
-    // selectName('pelanggan', currentUser.displayName);
-    selectAll();
+    selectOne();
     super.initState();
   }
 
@@ -163,7 +164,7 @@ class _HomeState extends State<Home> {
               const SizedBox(height: 8),
               // ListView.builder(
               //   itemCount: pesanan.length,
-              //   scrollDirection: Axis.horizontal,  
+              //   scrollDirection: Axis.horizontal,
               //   // shrinkWrap:
               //   //     true, // Tambahkan agar ListView bisa digunakan dalam Column
               //   // physics:
@@ -215,11 +216,11 @@ class _HomeState extends State<Home> {
                     ),
                   ),
                   title: Text(
-                    "Order No: #324125",
-                    style: TextStyle(fontWeight: FontWeight.bold),
+                    "Order No: #",
+                    style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
-                  subtitle: Text(
-                    "sedang dikirim",
+                  subtitle: const Text(
+                    'tahi',
                     style: TextStyle(color: Colors.blue),
                   ),
                 ),
@@ -242,11 +243,11 @@ class _HomeState extends State<Home> {
         padding: const EdgeInsets.all(8),
       ),
       onPressed: () {
-        
         Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) => Keranjang(layan: title, user: currentUser)));
+                builder: (context) =>
+                    Keranjang(layan: title, user: currentUser)));
       },
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,

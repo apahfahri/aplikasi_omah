@@ -16,16 +16,28 @@ class Keranjang extends StatefulWidget {
 }
 
 class KeranjangState extends State<Keranjang> {
+
+  late User user;
   DataService ds = DataService();
   List data = [];
   List<LayananDipilihModel> layanan = [];
   // List<LayananDipilihModel> layanan_pre = [];
 
   tampil() async {
-    // data = jsonDecode(await ds.selectWhere(token, project, 'layanan_dipilih',
-    //     appid, 'pelanggan', widget.user.displayName.toString()));
-    data = jsonDecode(
-        await ds.selectAll(token, project, 'layanan_dipilih', appid));
+    data = jsonDecode(await ds.selectWhere(token, project, 'layanan_dipilih',
+        appid, 'pelanggan', widget.user.displayName.toString()));
+    // data = jsonDecode(
+    //     await ds.selectAll(token, project, 'layanan_dipilih', appid));
+    // layanan = data.map((e) => LayananDipilihModel.fromJson(e)).toList();
+
+    setState(() {
+      layanan = layanan;
+    });
+  }
+
+  tambahLayanan(String namaPelanggan, String jenisLayanan, int jumlah) async {
+    data = jsonDecode(await ds.insertLayananDipilih(
+        appid, namaPelanggan, jenisLayanan, jumlah.toString()));
     layanan = data.map((e) => LayananDipilihModel.fromJson(e)).toList();
 
     setState(() {
@@ -33,9 +45,8 @@ class KeranjangState extends State<Keranjang> {
     });
   }
 
-  tambahLayanan(String namaPelanggan, String jenisLayanan) async {
-    data = jsonDecode(
-        await ds.insertLayananDipilih(appid, namaPelanggan, jenisLayanan, '1'));
+  updateLayanan(String namaPelanggan, String jenisLayanan, int jumlah)async{
+    data = jsonDecode(await ds.updateWhere('pelanggan', namaPelanggan, 'jumlah', jumlah.toString(), token, project, 'layanan_dipilih', appid));
     layanan = data.map((e) => LayananDipilihModel.fromJson(e)).toList();
 
     setState(() {
@@ -51,29 +62,11 @@ class KeranjangState extends State<Keranjang> {
 
   @override
   void initState() {
-    tambahLayanan(widget.user.displayName.toString(), widget.layan);
+    user = widget.user;
+    tambahLayanan(user.displayName.toString(), widget.layan, 1);
     tampil();
     super.initState();
   }
-
-  // final Map<String, int> order = {
-  //   "Boneka": 1,
-  //   "Sepatu": 2,
-  // };
-
-  // void increaseQuantity(int item) {
-  //   setState(() {
-  //     layanan['jumlah'] = layanan[item]! + 1;
-  //   });
-  // }
-
-  // void decreaseQuantity(int item) {
-  //   setState(() {
-  //     if (layanan[item]! > 0) {
-  //       layanan[item] = layanan[item]! - 1;
-  //     }
-  //   });
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -97,9 +90,7 @@ class KeranjangState extends State<Keranjang> {
         actions: [
           IconButton(
             icon: const Icon(Icons.add, color: Colors.black),
-            onPressed: () {
-              
-            },
+            onPressed: () {},
           ),
         ],
       ),
@@ -127,7 +118,8 @@ class KeranjangState extends State<Keranjang> {
                             ClipRRect(
                               borderRadius: BorderRadius.circular(12),
                               child: Image.asset(
-                                'assets/images/${item.layanan}.png', // Ganti sesuai nama gambar
+                                // 'assets/images/layanan/${item.layanan}.png', // Ganti sesuai nama gambar
+                                'assets/images/layanan/boneka.png', // Ganti sesuai nama gambar
                                 width: 60,
                                 height: 60,
                                 fit: BoxFit.cover,
@@ -146,7 +138,10 @@ class KeranjangState extends State<Keranjang> {
                             Row(
                               children: [
                                 IconButton(
-                                  onPressed: () {},
+                                  onPressed: () {
+                                    int hitung = item.jumlah + 1;
+                                    updateLayanan(user.displayName!, item.layanan, hitung);
+                                  },
                                   icon: const Icon(Icons.remove,
                                       color: Colors.grey),
                                 ),
@@ -160,7 +155,7 @@ class KeranjangState extends State<Keranjang> {
                                   ),
                                   child: Center(
                                     child: Text(
-                                      item.jumlah,
+                                      item.jumlah as String,
                                       style: const TextStyle(
                                           fontSize: 16,
                                           fontWeight: FontWeight.bold),
@@ -188,12 +183,12 @@ class KeranjangState extends State<Keranjang> {
                 // Tambah aksi checkout
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFFB3D9FF), // Warna biru muda
+                backgroundColor: const Color(0xFFB3D9FF),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),
                 padding: const EdgeInsets.symmetric(vertical: 16),
-                minimumSize: const Size(double.infinity, 50), // Tombol penuh
+                minimumSize: const Size(double.infinity, 50),
               ),
               child: const Text(
                 'Checkout',
