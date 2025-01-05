@@ -1,7 +1,14 @@
+import 'dart:convert';
+
+import 'package:aplikasi_omah/pages/keranjang.dart';
+import 'package:aplikasi_omah/util/ETTER/model/pesanan_model.dart';
+import 'package:aplikasi_omah/util/ETTER/restapi/restapi.dart';
 import 'package:aplikasi_omah/util/fire_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+
+import '../util/ETTER/restapi/config.dart';
 
 class Home extends StatefulWidget {
   final User user;
@@ -17,9 +24,39 @@ class _HomeState extends State<Home> {
 
   late User currentUser;
 
+  DataService ds = DataService();
+  List data = [];
+  List<PesananModel> pesanan = [];
+
+  selectAll() async {
+    data = jsonDecode(await ds.selectAll(token, project, 'pesanan', appid));
+    pesanan = data.map((e) => PesananModel.fromJson(e)).toList();
+
+    setState(() {
+      pesanan = pesanan;
+    });
+  }
+
+  selectName(dynamic field, dynamic value) async{
+    data = jsonDecode(await ds.selectWhereLike(token, project, 'pesanan', appid, field, value));
+    pesanan = data.map((e) => PesananModel.fromJson(e)).toList();
+
+    setState(() {
+      pesanan = pesanan;
+    });
+  }
+
+  Future reloadData(dynamic valye) async {
+    setState(() {
+      selectAll();
+    });
+  }
+
   @override
   void initState() {
     currentUser = widget.user;
+    // selectName('pelanggan', currentUser.displayName);
+    selectAll();
     super.initState();
   }
 
@@ -28,7 +65,7 @@ class _HomeState extends State<Home> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: Colors.lightBlue[50],
         elevation: 0,
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -124,6 +161,44 @@ class _HomeState extends State<Home> {
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 8),
+              // ListView.builder(
+              //   itemCount: pesanan.length,
+              //   scrollDirection: Axis.horizontal,  
+              //   // shrinkWrap:
+              //   //     true, // Tambahkan agar ListView bisa digunakan dalam Column
+              //   // physics:
+              //   //     const NeverScrollableScrollPhysics(), // Nonaktifkan scroll ListView karena sudah ada parent scroll
+              //   itemBuilder: (context, index) {
+              //     final item = pesanan[index];
+
+              //     return Card(
+              //       elevation: 4,
+              //       shape: RoundedRectangleBorder(
+              //         borderRadius: BorderRadius.circular(10),
+              //       ),
+              //       child: ListTile(
+              //         leading: ClipRRect(
+              //           borderRadius: BorderRadius.circular(8),
+              //           child: Image.asset(
+              //             "assets/images/delivery-truck.png",
+              //             width: 40,
+              //             height: 40,
+              //             fit: BoxFit.cover,
+              //           ),
+              //         ),
+              //         title: Text(
+              //           "Order No: #${item.no}",
+              //           style: const TextStyle(fontWeight: FontWeight.bold),
+              //         ),
+              //         subtitle: Text(
+              //           "${item.status_pengiriman}",
+              //           style: const TextStyle(color: Colors.blue),
+              //         ),
+              //       ),
+              //     );
+              //   },
+              // ),
+
               Card(
                 elevation: 4,
                 shape: RoundedRectangleBorder(
@@ -139,12 +214,12 @@ class _HomeState extends State<Home> {
                       fit: BoxFit.cover,
                     ),
                   ),
-                  title: const Text(
-                    "Order No: #1234567890",
+                  title: Text(
+                    "Order No: #324125",
                     style: TextStyle(fontWeight: FontWeight.bold),
                   ),
-                  subtitle: const Text(
-                    "Out for delivery",
+                  subtitle: Text(
+                    "sedang dikirim",
                     style: TextStyle(color: Colors.blue),
                   ),
                 ),
@@ -167,14 +242,18 @@ class _HomeState extends State<Home> {
         padding: const EdgeInsets.all(8),
       ),
       onPressed: () {
-        // Aksi saat tombol di-tap
+        
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => Keranjang(layan: title, user: currentUser)));
       },
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Image.asset(
             imagePath,
-            height: 350, 
+            height: 90,
             fit: BoxFit.contain,
           ),
           const SizedBox(height: 8),
@@ -184,12 +263,11 @@ class _HomeState extends State<Home> {
             style: const TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w500,
-              color: Colors.black, 
+              color: Colors.black,
             ),
           ),
         ],
       ),
     );
   }
-
 }
