@@ -3,6 +3,89 @@
 import 'package:http/http.dart' as http;
 
 class DataService {
+   Future insertPesanan(String appid, String no, String pelanggan, String no_telpon, String alamat, String tgl_penjemputan, String jam_penjemputan, String status_taruh, String status_cuci, String status_pembayaran, String total_harga, String nama_kurir) async {
+      String uri = 'https://io.etter.cloud/v4/insert';
+
+      try {
+         final response = await http.post(Uri.parse(uri), body: {
+            'token': '67072e841be56c51cde09d9b',
+            'project': 'omah_laundry_app',
+            'collection': 'pesanan',
+            'appid': appid,
+            'no': no,
+            'pelanggan': pelanggan,
+            'no_telpon': no_telpon,
+            'alamat': alamat,
+            'tgl_penjemputan': tgl_penjemputan,
+            'jam_penjemputan': jam_penjemputan,
+            'status_taruh': status_taruh,
+            'status_cuci': status_cuci,
+            'status_pembayaran': status_pembayaran,
+            'total_harga': total_harga,
+            'nama_kurir': nama_kurir
+         });
+
+         if (response.statusCode == 200) {
+            return response.body;
+         } else {
+            // Return an empty array
+            return '[]';
+         }
+      } catch (e) {
+         // Print error here
+         return '[]';
+      }
+   }
+
+   Future insertAkun(String appid, ) async {
+      String uri = 'https://io.etter.cloud/v4/insert';
+
+      try {
+         final response = await http.post(Uri.parse(uri), body: {
+            'token': '67072e841be56c51cde09d9b',
+            'project': 'omah_laundry_app',
+            'collection': 'akun',
+            'appid': appid,
+         });
+
+         if (response.statusCode == 200) {
+            return response.body;
+         } else {
+            // Return an empty array
+            return '[]';
+         }
+      } catch (e) {
+         // Print error here
+         return '[]';
+      }
+   }
+
+   Future insertLayananDipilih(String appid, String pelanggan, String layanan, String jumlah) async {
+      String uri = 'https://io.etter.cloud/v4/insert';
+
+      try {
+         final response = await http.post(Uri.parse(uri), body: {
+            'token': '67072e841be56c51cde09d9b',
+            'project': 'omah_laundry_app',
+            'collection': 'layanan_dipilih',
+            'appid': appid,
+            'pelanggan': pelanggan,
+            'layanan': layanan,
+            'jumlah': jumlah
+         });
+
+         if (response.statusCode == 200) {
+            return response.body;
+         } else {
+            // Return an empty array
+            return '[]';
+         }
+      } catch (e) {
+         // Print error here
+         return '[]';
+      }
+   }
+
    Future selectAll(String token, String project, String collection, String appid) async {
       String uri = 'https://io.etter.cloud/v4/select_all/token/' + token + '/project/' + project + '/collection/' + collection + '/appid/' + appid;
 

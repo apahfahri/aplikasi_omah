@@ -1,7 +1,14 @@
+import 'dart:convert';
+
+import 'package:aplikasi_omah/pages/keranjang.dart';
+import 'package:aplikasi_omah/util/ETTER/model/pesanan_model.dart';
+import 'package:aplikasi_omah/util/ETTER/restapi/restapi.dart';
 import 'package:aplikasi_omah/util/fire_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+
+import '../util/ETTER/restapi/config.dart';
 
 class Home extends StatefulWidget {
   final User user;
@@ -17,9 +24,39 @@ class _HomeState extends State<Home> {
 
   late User currentUser;
 
+  DataService ds = DataService();
+  List data = [];
+  List<PesananModel> pesanan = [];
+
+  selectAll() async {
+    data = jsonDecode(await ds.selectAll(token, project, 'pesanan', appid));
+    pesanan = data.map((e) => PesananModel.fromJson(e)).toList();
+
+    setState(() {
+      pesanan = pesanan;
+    });
+  }
+
+  selectName(dynamic field, dynamic value) async{
+    data = jsonDecode(await ds.selectWhereLike(token, project, 'pesanan', appid, field, value));
+    pesanan = data.map((e) => PesananModel.fromJson(e)).toList();
+
+    setState(() {
+      pesanan = pesanan;
+    });
+  }
+
+  Future reloadData(dynamic valye) async {
+    setState(() {
+      selectAll();
+    });
+  }
+
   @override
   void initState() {
     currentUser = widget.user;
+    // selectName('pelanggan', currentUser.displayName);
+    selectAll();
     super.initState();
   }
 
@@ -28,25 +65,34 @@ class _HomeState extends State<Home> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
+        backgroundColor: Colors.lightBlue[50],
+        elevation: 0,
         title: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const Text(
               'Selamat Datang',
-              style: TextStyle(color: Colors.black45, fontSize: 14),
+              style: TextStyle(color: Colors.grey, fontSize: 14),
             ),
             Text(
-              '${currentUser.displayName}' ?? 'Pelanggan',
+              currentUser.displayName ?? 'Pelanggan',
               style: const TextStyle(color: Colors.black, fontSize: 18),
             ),
           ],
         ),
+        iconTheme: const IconThemeData(color: Colors.black),
       ),
       drawer: Drawer(
         child: ListView(
           children: <Widget>[
-            DrawerHeader(
-              decoration: const BoxDecoration(color: Colors.white),
-              child: Text('Header'),
+            UserAccountsDrawerHeader(
+              decoration: const BoxDecoration(color: Colors.blue),
+              accountName: Text(currentUser.displayName ?? 'Username'),
+              accountEmail: Text(currentUser.email ?? 'Email'),
+              currentAccountPicture: const CircleAvatar(
+                backgroundColor: Colors.white,
+                child: Icon(Icons.person, size: 50, color: Colors.blue),
+              ),
             ),
             ListTile(
               leading: const Icon(Icons.home),
@@ -69,109 +115,115 @@ class _HomeState extends State<Home> {
                     title: const Text('Logout'),
                     onTap: () {
                       FireAuth.logout();
+                      Navigator.of(context)
+                          .pushReplacementNamed('login_screen');
                     },
                   ),
           ],
         ),
       ),
       body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  buildItemMenu("assets/images/washer.png", "Washing"),
-                  buildItemMenu("assets/images/deep.png", "Steam press"),
-                ],
+              const Text(
+                'Layanan Kami',
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
-              const SizedBox(height: 20),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  buildItemMenu("assets/images/dry.png", "Dry cleaning"),
-                  buildItemMenu("assets/images/formal.png", "Formal Wash"),
-                ],
-              ),
-              const SizedBox(height: 20),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  buildItemMenu("assets/images/deep.png", "Deep cleaning "),
-                  buildItemMenu("assets/images/powder.png", "Powder Wash"),
-                ],
-              ),
-              const SizedBox(height: 20),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Text(
-                    "Current orders (3)",
-                    style: TextStyle(
-                        fontSize: 19,
-                        fontWeight: FontWeight.w500,
-                        color: Colors.grey),
-                  ),
-                  const Text(
-                    "View all",
-                    style: TextStyle(
-                        fontSize: 15,
-                        fontWeight: FontWeight.w400,
-                        color: Colors.blue),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 10),
-              Container(
-                width: MediaQuery.of(context).size.width,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(10),
-                  boxShadow: const [
-                    BoxShadow(
-                        color: Colors.grey, blurRadius: 3, offset: Offset(0, 1))
-                  ],
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+              const SizedBox(height: 16),
+              Expanded(
+                child: GridView.count(
+                  crossAxisCount: 2,
+                  crossAxisSpacing: 16,
+                  mainAxisSpacing: 16,
+                  padding: const EdgeInsets.all(10),
                   children: [
-                    Container(
-                      margin: const EdgeInsets.symmetric(vertical: 6),
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 5, horizontal: 5),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(30),
-                        color: Colors.white,
-                        boxShadow: const [
-                          BoxShadow(
-                              color: Colors.grey,
-                              offset: Offset(0, 1),
-                              blurRadius: 1)
-                        ],
-                      ),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(20),
-                        child: Image.asset("assets/images/delivery-truck.png",
-                            height: 40),
-                      ),
-                    ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: const [
-                        Text(
-                          "Order No : #1234567890",
-                          style: TextStyle(fontWeight: FontWeight.w500),
-                        ),
-                        Text(
-                          "Out of delivery",
-                          style: TextStyle(color: Colors.blue),
-                        ),
-                      ],
-                    ),
+                    buildServiceItem(
+                        "assets/images/layanan/kiloan.png", "Cuci Kiloan"),
+                    buildServiceItem(
+                        "assets/images/layanan/bed cover.png", "Bed Cover"),
+                    buildServiceItem(
+                        "assets/images/layanan/boneka.png", "Boneka"),
+                    buildServiceItem(
+                        "assets/images/layanan/karpet.png", "Karpet"),
+                    buildServiceItem(
+                        "assets/images/layanan/sepatu.png", "Sepatu"),
+                    buildServiceItem(
+                        "assets/images/layanan/koper.png", "Koper"),
                   ],
                 ),
-              )
+              ),
+              const SizedBox(height: 16),
+              const Text(
+                'Pesanan Saat Ini',
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 8),
+              // ListView.builder(
+              //   itemCount: pesanan.length,
+              //   scrollDirection: Axis.horizontal,  
+              //   // shrinkWrap:
+              //   //     true, // Tambahkan agar ListView bisa digunakan dalam Column
+              //   // physics:
+              //   //     const NeverScrollableScrollPhysics(), // Nonaktifkan scroll ListView karena sudah ada parent scroll
+              //   itemBuilder: (context, index) {
+              //     final item = pesanan[index];
+
+              //     return Card(
+              //       elevation: 4,
+              //       shape: RoundedRectangleBorder(
+              //         borderRadius: BorderRadius.circular(10),
+              //       ),
+              //       child: ListTile(
+              //         leading: ClipRRect(
+              //           borderRadius: BorderRadius.circular(8),
+              //           child: Image.asset(
+              //             "assets/images/delivery-truck.png",
+              //             width: 40,
+              //             height: 40,
+              //             fit: BoxFit.cover,
+              //           ),
+              //         ),
+              //         title: Text(
+              //           "Order No: #${item.no}",
+              //           style: const TextStyle(fontWeight: FontWeight.bold),
+              //         ),
+              //         subtitle: Text(
+              //           "${item.status_pengiriman}",
+              //           style: const TextStyle(color: Colors.blue),
+              //         ),
+              //       ),
+              //     );
+              //   },
+              // ),
+
+              Card(
+                elevation: 4,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: ListTile(
+                  leading: ClipRRect(
+                    borderRadius: BorderRadius.circular(8),
+                    child: Image.asset(
+                      "assets/images/delivery-truck.png",
+                      width: 40,
+                      height: 40,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                  title: Text(
+                    "Order No: #324125",
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  subtitle: Text(
+                    "sedang dikirim",
+                    style: TextStyle(color: Colors.blue),
+                  ),
+                ),
+              ),
             ],
           ),
         ),
@@ -179,42 +231,42 @@ class _HomeState extends State<Home> {
     );
   }
 
-  Widget buildItemMenu(String image, String text) {
-    return GestureDetector(
-      onTap: () {},
-      child: Container(
-        padding: const EdgeInsets.all(15),
-        decoration: BoxDecoration(
-          boxShadow: const [
-            BoxShadow(
-              color: Colors.grey,
-              blurRadius: 7,
-              offset: Offset(0, 2), // changes position of shadow
-            )
-          ],
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(12),
+  Widget buildServiceItem(String imagePath, String title) {
+    return ElevatedButton(
+      style: ElevatedButton.styleFrom(
+        elevation: 4,
+        backgroundColor: Colors.white,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10),
         ),
-        child: Column(
-          children: [
-            ClipRect(
-              child: Image.asset(
-                image,
-                width: 100,
-                height: 80,
-                fit: BoxFit.fill,
-              ),
+        padding: const EdgeInsets.all(8),
+      ),
+      onPressed: () {
+        
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => Keranjang(layan: title, user: currentUser)));
+      },
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Image.asset(
+            imagePath,
+            height: 90,
+            fit: BoxFit.contain,
+          ),
+          const SizedBox(height: 8),
+          Text(
+            title,
+            textAlign: TextAlign.center,
+            style: const TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.w500,
+              color: Colors.black,
             ),
-            const SizedBox(height: 15),
-            Text(
-              text,
-              style: const TextStyle(
-                  fontSize: 15,
-                  fontWeight: FontWeight.w500,
-                  color: Colors.black54),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

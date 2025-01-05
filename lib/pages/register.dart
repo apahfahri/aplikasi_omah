@@ -147,7 +147,7 @@ class _RegisterState extends State<Register> {
                             onPressed: () async {
                               setState(() {
                                 isProccess = true;
-                              });
+                              }); 
                               try {
                                 if (registerFormKey.currentState!.validate()) {
                                   final newUser =

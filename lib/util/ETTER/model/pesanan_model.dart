@@ -8,7 +8,6 @@ class PesananModel {
    final String jam_penjemputan;
    final String status_taruh;
    final String status_cuci;
-   final String status_pengiriman;
    final String status_pembayaran;
    final String total_harga;
    final String nama_kurir;
@@ -23,7 +22,6 @@ class PesananModel {
       required this.jam_penjemputan,
       required this.status_taruh,
       required this.status_cuci,
-      required this.status_pengiriman,
       required this.status_pembayaran,
       required this.total_harga,
       required this.nama_kurir
@@ -40,7 +38,6 @@ class PesananModel {
          jam_penjemputan: data['jam_penjemputan'],
          status_taruh: data['status_taruh'],
          status_cuci: data['status_cuci'],
-         status_pengiriman: data['status_pengiriman'],
          status_pembayaran: data['status_pembayaran'],
          total_harga: data['total_harga'],
          nama_kurir: data['nama_kurir']
