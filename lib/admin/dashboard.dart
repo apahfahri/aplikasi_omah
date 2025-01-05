@@ -1,3 +1,4 @@
+import 'package:aplikasi_omah/admin/profileAdmin.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -25,8 +26,8 @@ class DashboardState extends State<Dashboard> {
         elevation: 0,
         title: Row(
           children: [
-            Icon(Icons.menu, color: Colors.black),
-            SizedBox(width: 10),
+            // Icon(Icons.menu, color: Colors.black),
+            // SizedBox(width: 10),
             Text(
               'Hello, Admin',
               style: TextStyle(
@@ -43,6 +44,54 @@ class DashboardState extends State<Dashboard> {
             onPressed: _logout,
           ),
         ],
+      ),
+      drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: <Widget>[
+            UserAccountsDrawerHeader(
+              accountName: Text('Admin'),
+              accountEmail: Text('admin@example.com'),
+              currentAccountPicture: GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => ProfileAdminPage()),
+                  );
+                },
+                child: CircleAvatar(
+                  backgroundColor: Colors.white,
+                  child: Icon(Icons.person, size: 40, color: Colors.black),
+                ),
+              ),
+            ),
+            ListTile(
+              leading: Icon(Icons.shopping_bag),
+              title: Text('Pesanan'),
+              onTap: () {},
+            ),
+            ListTile(
+              leading: Icon(Icons.check_circle),
+              title: Text('Selesai'),
+              onTap: () {},
+            ),
+            ListTile(
+              leading: Icon(Icons.delivery_dining),
+              title: Text('Kurir'),
+              onTap: () {},
+            ),
+            ListTile(
+              leading: Icon(Icons.bar_chart),
+              title: Text('Analisis'),
+              onTap: () {},
+            ),
+            ListTile(
+              leading: Icon(Icons.logout),
+              title: Text('Logout'),
+              onTap: _logout,
+            ),
+          ],
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
