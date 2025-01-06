@@ -1,3 +1,4 @@
+import 'package:aplikasi_omah/admin/pesanan.dart';
 import 'package:aplikasi_omah/admin/profileAdmin.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -42,18 +43,18 @@ class DashboardState extends State<Dashboard> {
       drawer: Drawer(
         child: ListView(
           padding: EdgeInsets.zero,
-          children: <Widget>[  
-            UserAccountsDrawerHeader(
-              accountName: Text('Admin'),
-              accountEmail: Text('admin@example.com'),
-              currentAccountPicture: GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => ProfileAdminPage()),
-                  );
-                },
-                child: CircleAvatar(
+          children: <Widget>[
+            GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => ProfileAdminPage()),
+                );
+              },
+              child: UserAccountsDrawerHeader(
+                accountName: Text('Admin'),
+                accountEmail: Text('admin@example.com'),
+                currentAccountPicture: CircleAvatar(
                   backgroundColor: Colors.white,
                   child: Icon(Icons.person, size: 40, color: Colors.black),
                 ),
@@ -62,22 +63,42 @@ class DashboardState extends State<Dashboard> {
             ListTile(
               leading: Icon(Icons.shopping_bag),
               title: Text('Pesanan'),
-              onTap: () {},
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => PesananPage()),
+                  );
+              },
             ),
             ListTile(
               leading: Icon(Icons.check_circle),
               title: Text('Selesai'),
-              onTap: () {},
+              onTap: () {
+                // Navigator.push(
+                //     context,
+                //     MaterialPageRoute(builder: (context) => SelesaiPage()),
+                //   );
+              },
             ),
             ListTile(
               leading: Icon(Icons.delivery_dining),
               title: Text('Kurir'),
-              onTap: () {},
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => KurirPage()),
+                  );
+              },
             ),
             ListTile(
               leading: Icon(Icons.bar_chart),
               title: Text('Analisis'),
-              onTap: () {},
+              onTap: () {
+                // Navigator.push(
+                //     context,
+                //     MaterialPageRoute(builder: (context) => AnalisisPage()),
+                //   );
+              },
             ),
             ListTile(
               leading: Icon(Icons.logout),
@@ -124,7 +145,7 @@ class DashboardState extends State<Dashboard> {
                 _buildButton('Order', Colors.lightBlueAccent, () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => OrderPage()),
+                    MaterialPageRoute(builder: (context) => PesananPage()),
                   );
                 }),
                 _buildButton('Kurir', Colors.lightBlueAccent, () {
