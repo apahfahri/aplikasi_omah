@@ -58,7 +58,7 @@ class _HomeState extends State<Home> {
   @override
   void initState() {
     currentUser = widget.user;
-    selectOne();
+    // selectOne();
     super.initState();
   }
 
@@ -260,7 +260,7 @@ class _HomeState extends State<Home> {
         //             Keranjang(layan: title, user: currentUser)));
 
         Navigator.push(
-            context, MaterialPageRoute(builder: (context) => Order()));
+            context, MaterialPageRoute(builder: (context) => Order(user: currentUser, pilihan: title)));
       },
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
