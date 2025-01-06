@@ -1,15 +1,22 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class ProfileAdminPage extends StatelessWidget {
+  final User? Admin;
+
+  ProfileAdminPage({this.Admin});
+
   @override
   Widget build(BuildContext context) {
+    final currentUser = Admin ?? FirebaseAuth.instance.currentUser;
+
     return Scaffold(
       backgroundColor: Color(0xFFE9F4FF),
       appBar: AppBar(
-        backgroundColor: Color(0xFFE9F4FF),
+        backgroundColor: Color.fromARGB(255, 235, 243, 254),
         elevation: 0,
         title: Text(
-          'Profil Admin',
+          'PROFIL ADMIN',
           style: TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.bold,
@@ -24,12 +31,11 @@ class ProfileAdminPage extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             CircleAvatar(
-              radius: 150, // Ukuran besar untuk foto profil
-              backgroundColor: Colors.grey[200],
-              child: Icon(Icons.person, size: 200, color: Colors.grey),
+              radius: 150,
+              backgroundColor: Colors.lightBlue[100],
+              child: Icon(Icons.assignment_ind_rounded, size: 200, color: Colors.lightBlue[300]),
             ),
             SizedBox(height: 30),
-            // Pesanan Selesai dan Income
             Container(
               padding: EdgeInsets.all(16),
               decoration: BoxDecoration(
@@ -38,6 +44,14 @@ class ProfileAdminPage extends StatelessWidget {
               ),
               child: Column(
                 children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text('PENCAPAIAN',
+                          style: TextStyle(fontSize: 16, color: Colors.grey)),
+                    ],
+                  ),
+                  SizedBox(height: 5),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -63,82 +77,38 @@ class ProfileAdminPage extends StatelessWidget {
               ),
             ),
             SizedBox(height: 20),
-            // Nama
-            Container(
-              width: double.infinity,
-              padding: EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-              margin: EdgeInsets.only(bottom: 10),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text('Nama:',
-                      style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.grey)),
-                  Text('Admin Omah',
-                      style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black)),
-                ],
-              ),
-            ),
-            // Username
-            Container(
-              width: double.infinity,
-              padding: EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-              margin: EdgeInsets.only(bottom: 10),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text('Username:',
-                      style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.grey)),
-                  Text('admin123',
-                      style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black)),
-                ],
-              ),
-            ),
-            // No Telepon
-            Container(
-              width: double.infinity,
-              padding: EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text('No Telepon:',
-                      style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.grey)),
-                  Text('081234567890',
-                      style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black)),
-                ],
-              ),
-            ),
+            // buildInfoRow('ID:', currentUser?.uid ?? 'Admin'),
+            buildInfoRow('Nama:', currentUser?.displayName ?? 'Admin'),
+            buildInfoRow('Email:', currentUser?.email ?? 'Admin'),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget buildInfoRow(String label, String value) {
+    return Container(
+      width: double.infinity,
+      padding: EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+      margin: EdgeInsets.only(bottom: 10),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(label,
+              style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.grey)),
+          Text(value,
+              style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black)),
+        ],
       ),
     );
   }
