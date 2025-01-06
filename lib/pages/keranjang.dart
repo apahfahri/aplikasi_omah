@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:aplikasi_omah/util/ETTER/model/layanan_dipilih.dart';
+// import 'package:aplikasi_omah/util/ETTER/model/layanan_dipilih.dart';
 import 'package:aplikasi_omah/util/ETTER/restapi/config.dart';
 import 'package:aplikasi_omah/util/ETTER/restapi/restapi.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -20,7 +20,7 @@ class KeranjangState extends State<Keranjang> {
   late User user;
   DataService ds = DataService();
   List data = [];
-  List<LayananDipilihModel> layanan = [];
+  // List<LayananDipilihModel> layanan = [];
   // List<LayananDipilihModel> layanan_pre = [];
 
   tampil() async {
@@ -31,28 +31,28 @@ class KeranjangState extends State<Keranjang> {
     // layanan = data.map((e) => LayananDipilihModel.fromJson(e)).toList();
 
     setState(() {
-      layanan = layanan;
+      // layanan = layanan;
     });
   }
 
-  tambahLayanan(String namaPelanggan, String jenisLayanan, int jumlah) async {
-    data = jsonDecode(await ds.insertLayananDipilih(
-        appid, namaPelanggan, jenisLayanan, jumlah.toString()));
-    layanan = data.map((e) => LayananDipilihModel.fromJson(e)).toList();
+  // tambahLayanan(String namaPelanggan, String jenisLayanan, int jumlah) async {
+  //   data = jsonDecode(await ds.insertLayananDipilih(
+  //       appid, namaPelanggan, jenisLayanan, jumlah.toString()));
+  //   layanan = data.map((e) => LayananDipilihModel.fromJson(e)).toList();
 
-    setState(() {
-      layanan = layanan;
-    });
-  }
+  //   setState(() {
+  //     layanan = layanan;
+  //   });
+  // }
 
-  updateLayanan(String namaPelanggan, String jenisLayanan, int jumlah)async{
-    data = jsonDecode(await ds.updateWhere('pelanggan', namaPelanggan, 'jumlah', jumlah.toString(), token, project, 'layanan_dipilih', appid));
-    layanan = data.map((e) => LayananDipilihModel.fromJson(e)).toList();
+  // updateLayanan(String namaPelanggan, String jenisLayanan, int jumlah)async{
+  //   data = jsonDecode(await ds.updateWhere('pelanggan', namaPelanggan, 'jumlah', jumlah.toString(), token, project, 'layanan_dipilih', appid));
+  //   layanan = data.map((e) => LayananDipilihModel.fromJson(e)).toList();
 
-    setState(() {
-      layanan = layanan;
-    });
-  }
+  //   setState(() {
+  //     layanan = layanan;
+  //   });
+  // }
 
   Future reloadData(dynamic valye) async {
     setState(() {
@@ -63,7 +63,7 @@ class KeranjangState extends State<Keranjang> {
   @override
   void initState() {
     user = widget.user;
-    tambahLayanan(user.displayName.toString(), widget.layan, 1);
+    // tambahLayanan(user.displayName.toString(), widget.layan, 1);
     tampil();
     super.initState();
   }
@@ -98,85 +98,85 @@ class KeranjangState extends State<Keranjang> {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            Expanded(
-              child: ListView.builder(
-                itemCount: layanan.length,
-                itemBuilder: (context, index) {
-                  final item = layanan[index];
+            // Expanded(
+            //   child: ListView.builder(
+            //     itemCount: layanan.length,
+            //     itemBuilder: (context, index) {
+            //       final item = layanan[index];
 
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8.0),
-                    child: Card(
-                      elevation: 4,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Row(
-                          children: [
-                            ClipRRect(
-                              borderRadius: BorderRadius.circular(12),
-                              child: Image.asset(
-                                // 'assets/images/layanan/${item.layanan}.png', // Ganti sesuai nama gambar
-                                'assets/images/layanan/boneka.png', // Ganti sesuai nama gambar
-                                width: 60,
-                                height: 60,
-                                fit: BoxFit.cover,
-                              ),
-                            ),
-                            const SizedBox(width: 16),
-                            Expanded(
-                              child: Text(
-                                item.layanan,
-                                style: const TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ),
-                            Row(
-                              children: [
-                                IconButton(
-                                  onPressed: () {
-                                    int hitung = item.jumlah + 1;
-                                    updateLayanan(user.displayName!, item.layanan, hitung);
-                                  },
-                                  icon: const Icon(Icons.remove,
-                                      color: Colors.grey),
-                                ),
-                                Container(
-                                  width: 32,
-                                  height: 32,
-                                  decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.circular(8),
-                                    border: Border.all(color: Colors.grey),
-                                  ),
-                                  child: Center(
-                                    child: Text(
-                                      item.jumlah as String,
-                                      style: const TextStyle(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                  ),
-                                ),
-                                IconButton(
-                                  onPressed: () {},
-                                  icon:
-                                      const Icon(Icons.add, color: Colors.grey),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  );
-                },
-              ),
-            ),
+            //       return Padding(
+            //         padding: const EdgeInsets.symmetric(vertical: 8.0),
+            //         child: Card(
+            //           elevation: 4,
+            //           shape: RoundedRectangleBorder(
+            //             borderRadius: BorderRadius.circular(12),
+            //           ),
+            //           child: Padding(
+            //             padding: const EdgeInsets.all(16.0),
+            //             child: Row(
+            //               children: [
+            //                 ClipRRect(
+            //                   borderRadius: BorderRadius.circular(12),
+            //                   child: Image.asset(
+            //                     // 'assets/images/layanan/${item.layanan}.png', // Ganti sesuai nama gambar
+            //                     'assets/images/layanan/boneka.png', // Ganti sesuai nama gambar
+            //                     width: 60,
+            //                     height: 60,
+            //                     fit: BoxFit.cover,
+            //                   ),
+            //                 ),
+            //                 const SizedBox(width: 16),
+            //                 Expanded(
+            //                   child: Text(
+            //                     item.layanan,
+            //                     style: const TextStyle(
+            //                       fontSize: 18,
+            //                       fontWeight: FontWeight.bold,
+            //                     ),
+            //                   ),
+            //                 ),
+            //                 Row(
+            //                   children: [
+            //                     IconButton(
+            //                       onPressed: () {
+            //                         int hitung = item.jumlah + 1;
+            //                         updateLayanan(user.displayName!, item.layanan, hitung);
+            //                       },
+            //                       icon: const Icon(Icons.remove,
+            //                           color: Colors.grey),
+            //                     ),
+            //                     Container(
+            //                       width: 32,
+            //                       height: 32,
+            //                       decoration: BoxDecoration(
+            //                         color: Colors.white,
+            //                         borderRadius: BorderRadius.circular(8),
+            //                         border: Border.all(color: Colors.grey),
+            //                       ),
+            //                       child: Center(
+            //                         child: Text(
+            //                           item.jumlah as String,
+            //                           style: const TextStyle(
+            //                               fontSize: 16,
+            //                               fontWeight: FontWeight.bold),
+            //                         ),
+            //                       ),
+            //                     ),
+            //                     IconButton(
+            //                       onPressed: () {},
+            //                       icon:
+            //                           const Icon(Icons.add, color: Colors.grey),
+            //                     ),
+            //                   ],
+            //                 ),
+            //               ],
+            //             ),
+            //           ),
+            //         ),
+            //       );
+            //     },
+            //   ),
+            // ),
             const SizedBox(height: 16),
             ElevatedButton(
               onPressed: () {
