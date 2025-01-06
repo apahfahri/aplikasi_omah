@@ -22,9 +22,12 @@ class OrderState extends State<Order> {
   late Future<TimeOfDay?> selectedHour;
   String date = "-";
 
+  final nama_pelanggan = TextEditingController();
+  final no_telpon = TextEditingController();
+  final alamat = TextEditingController();
   final tgl_penjemputan = TextEditingController();
   var jam_penjemputan = TextEditingController();
-  String pilihan_pembayaran = '';
+  String pilihan_pembayaran = 'COD';
 
   @override
   Widget build(BuildContext context) {
@@ -80,8 +83,7 @@ class OrderState extends State<Order> {
                       padding: const EdgeInsets.symmetric(
                           horizontal: 8, vertical: 16),
                       child: TextField(
-                        controller: TextEditingController(
-                            text: currentUser.displayName ?? ''),
+                        controller: nama_pelanggan..text = currentUser.displayName ?? '',
                         keyboardType: TextInputType.text,
                         decoration: const InputDecoration(
                           border: OutlineInputBorder(),
@@ -94,7 +96,7 @@ class OrderState extends State<Order> {
                       padding: const EdgeInsets.symmetric(
                           horizontal: 8, vertical: 16),
                       child: TextField(
-                        controller: TextEditingController(),
+                        controller: no_telpon,
                         keyboardType: TextInputType.text,
                         decoration: const InputDecoration(
                           border: OutlineInputBorder(),
@@ -106,7 +108,7 @@ class OrderState extends State<Order> {
                       padding: const EdgeInsets.symmetric(
                           horizontal: 8, vertical: 16),
                       child: TextField(
-                        controller: TextEditingController(),
+                        controller: alamat,
                         keyboardType: TextInputType.text,
                         decoration: const InputDecoration(
                           border: OutlineInputBorder(),
@@ -122,7 +124,7 @@ class OrderState extends State<Order> {
                         keyboardType: TextInputType.text,
                         decoration: const InputDecoration(
                           border: OutlineInputBorder(),
-                          hintText: 'Tanggal Penjemputan',
+                          labelText: 'Tanggal Penjemputan',
                         ),
                         onTap: () {
                           showDialogPicker(context);
@@ -137,7 +139,7 @@ class OrderState extends State<Order> {
                         keyboardType: TextInputType.text,
                         decoration: const InputDecoration(
                           border: OutlineInputBorder(),
-                          hintText: 'Jam Penjemputan',
+                          labelText: 'Jam Penjemputan',
                         ),
                         onTap: () {
                           dialogPickerClock(context);
@@ -150,7 +152,9 @@ class OrderState extends State<Order> {
                       child: DropdownButtonFormField(
                         decoration: const InputDecoration(
                           filled: false,
-                          border: InputBorder.none,
+                          // border: InputBorder.none,
+                          border: OutlineInputBorder(),
+                          labelText: 'Metode Pembayaran',
                         ),
                         value: pilihan_pembayaran,
                         onChanged: (String? newValue) {
@@ -167,12 +171,12 @@ class OrderState extends State<Order> {
                         }).toList(),
                       ),
                     ),
-                    const TextField(
-                      decoration: InputDecoration(
-                        // hintText: 'Catatan',
-                        labelText: 'Catatan',
-                      ),
-                    ),
+                    // const TextField(
+                    //   decoration: InputDecoration(
+                    //     // hintText: 'Catatan',
+                    //     labelText: 'Catatan',
+                    //   ),
+                    // ),
                     const SizedBox(height: 20),
                     ElevatedButton(
                       onPressed: () {},
@@ -199,6 +203,7 @@ class OrderState extends State<Order> {
         final String formattedHour = value.format(context);
         jam_penjemputan.text = formattedHour;
       });
+      return null;
     });
   }
 
