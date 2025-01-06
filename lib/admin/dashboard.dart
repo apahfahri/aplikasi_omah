@@ -1,3 +1,4 @@
+import 'package:aplikasi_omah/admin/analisis.dart';
 import 'package:aplikasi_omah/admin/pesanan.dart';
 import 'package:aplikasi_omah/admin/profileAdmin.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -97,10 +98,10 @@ class DashboardState extends State<Dashboard> {
               leading: Icon(Icons.bar_chart),
               title: Text('Analisis'),
               onTap: () {
-                // Navigator.push(
-                //     context,
-                //     MaterialPageRoute(builder: (context) => AnalisisPage()),
-                //   );
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => AnalyticsChart()),
+                  );
               },
             ),
             ListTile(
