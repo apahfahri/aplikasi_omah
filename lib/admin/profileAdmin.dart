@@ -16,7 +16,7 @@ class ProfileAdminPage extends StatelessWidget {
         backgroundColor: Color.fromARGB(255, 235, 243, 254),
         elevation: 0,
         title: Text(
-          'PROFIL ADMIN',
+          ' PROFIL ADMIN ',
           style: TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.bold,
