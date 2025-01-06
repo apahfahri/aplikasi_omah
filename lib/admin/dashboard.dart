@@ -78,6 +78,7 @@ class _DashboardState extends State<Dashboard> {
                 );
               },
               child: UserAccountsDrawerHeader(
+                decoration: BoxDecoration(color: Colors.lightBlue[500]),
                 accountName: Text(currentUser.displayName ?? 'Username'),
                 accountEmail: Text(currentUser.email ?? 'Email'),
                 currentAccountPicture: const CircleAvatar(
