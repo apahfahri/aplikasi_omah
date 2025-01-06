@@ -3,7 +3,7 @@
 import 'package:http/http.dart' as http;
 
 class DataService {
-   Future insertPesanan(String appid, String no, String pelanggan, String no_telpon, String alamat, String tgl_penjemputan, String jam_penjemputan, String status_taruh, String status_cuci, String status_pembayaran, String total_harga, String nama_kurir) async {
+   Future insertPesanan(String appid, String no, String pelanggan, String no_telpon, String alamat, String jenis_layanan, String jumlah_layanan, String jam_penjemputan, String tgl_penjemputan, String tgl_pengantaran, String status_pesanan, String metode_pembayaran, String status_pembayaran, String total_harga, String nama_kurir) async {
       String uri = 'https://io.etter.cloud/v4/insert';
 
       try {
@@ -16,10 +16,13 @@ class DataService {
             'pelanggan': pelanggan,
             'no_telpon': no_telpon,
             'alamat': alamat,
-            'tgl_penjemputan': tgl_penjemputan,
+            'jenis_layanan': jenis_layanan,
+            'jumlah_layanan': jumlah_layanan,
             'jam_penjemputan': jam_penjemputan,
-            'status_taruh': status_taruh,
-            'status_cuci': status_cuci,
+            'tgl_penjemputan': tgl_penjemputan,
+            'tgl_pengantaran': tgl_pengantaran,
+            'status_pesanan': status_pesanan,
+            'metode_pembayaran': metode_pembayaran,
             'status_pembayaran': status_pembayaran,
             'total_harga': total_harga,
             'nama_kurir': nama_kurir
@@ -46,32 +49,6 @@ class DataService {
             'project': 'omah_laundry_app',
             'collection': 'akun',
             'appid': appid,
-         });
-
-         if (response.statusCode == 200) {
-            return response.body;
-         } else {
-            // Return an empty array
-            return '[]';
-         }
-      } catch (e) {
-         // Print error here
-         return '[]';
-      }
-   }
-
-   Future insertLayananDipilih(String appid, String pelanggan, String layanan, String jumlah) async {
-      String uri = 'https://io.etter.cloud/v4/insert';
-
-      try {
-         final response = await http.post(Uri.parse(uri), body: {
-            'token': '67072e841be56c51cde09d9b',
-            'project': 'omah_laundry_app',
-            'collection': 'layanan_dipilih',
-            'appid': appid,
-            'pelanggan': pelanggan,
-            'layanan': layanan,
-            'jumlah': jumlah
          });
 
          if (response.statusCode == 200) {
