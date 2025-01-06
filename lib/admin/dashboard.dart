@@ -8,10 +8,19 @@ class Dashboard extends StatefulWidget {
 
   const Dashboard({super.key, required this.Admin});
   @override
-  DashboardState createState() => DashboardState();
+  _DashboardState createState() => _DashboardState();
 }
 
-class DashboardState extends State<Dashboard> {
+class _DashboardState extends State<Dashboard> {
+  bool isLogout = false;
+
+  late User currentUser;
+
+  // Future reloadData(dynamic value) async {
+  //   setState(() {
+  //     SelectAllTextIntent();
+  //   });
+  // }
   Future<void> _logout() async {
     try {
       await FirebaseAuth.instance.signOut();
@@ -19,6 +28,13 @@ class DashboardState extends State<Dashboard> {
     } catch (e) {
       print('Error logging out: $e');
     }
+  }
+
+  @override
+  void initState() {
+    currentUser = widget.Admin;
+    // SelectAllTextIntent();
+    super.initState();
   }
 
   @override
@@ -30,16 +46,23 @@ class DashboardState extends State<Dashboard> {
         elevation: 0,
         title: Row(
           children: [
-            // Icon(Icons.menu, color: Colors.black),
-            // SizedBox(width: 10),
-            Text(
-              'Hello, Admin',
+            const Text(
+              'Hello, ',
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
                 color: Colors.black,
               ),
             ),
+            Text(
+              currentUser.displayName ?? 'Admin',
+              style: const
+              TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: Colors.black,
+              )
+            )
           ],
         ),
       ),
@@ -55,11 +78,11 @@ class DashboardState extends State<Dashboard> {
                 );
               },
               child: UserAccountsDrawerHeader(
-                accountName: Text('Admin'),
-                accountEmail: Text('admin@example.com'),
-                currentAccountPicture: CircleAvatar(
+                accountName: Text(currentUser.displayName ?? 'Username'),
+                accountEmail: Text(currentUser.email ?? 'Email'),
+                currentAccountPicture: const CircleAvatar(
                   backgroundColor: Colors.white,
-                  child: Icon(Icons.person, size: 40, color: Colors.black),
+                  child: Icon(Icons.person, size: 50, color: Colors.blue),
                 ),
               ),
             ),
@@ -68,9 +91,9 @@ class DashboardState extends State<Dashboard> {
               title: Text('Pesanan'),
               onTap: () {
                 Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => PesananPage()),
-                  );
+                  context,
+                  MaterialPageRoute(builder: (context) => PesananPage()),
+                );
               },
             ),
             ListTile(
@@ -88,9 +111,9 @@ class DashboardState extends State<Dashboard> {
               title: Text('Kurir'),
               onTap: () {
                 Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => KurirPage()),
-                  );
+                  context,
+                  MaterialPageRoute(builder: (context) => KurirPage()),
+                );
               },
             ),
             ListTile(
