@@ -38,17 +38,11 @@ class DashboardState extends State<Dashboard> {
             ),
           ],
         ),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.logout, color: Colors.black),
-            onPressed: _logout,
-          ),
-        ],
       ),
       drawer: Drawer(
         child: ListView(
           padding: EdgeInsets.zero,
-          children: <Widget>[
+          children: <Widget>[  
             UserAccountsDrawerHeader(
               accountName: Text('Admin'),
               accountEmail: Text('admin@example.com'),
