@@ -44,8 +44,6 @@ class MainApp extends StatelessWidget {
           'login_screen' : (context) => Login(),
           'register_screen' : (context) => Register(),
           // 'home_screen' : (context) => Home(),
-          'admin_screen' : (context) => Dashboard(),
-         //'kurir_screen' : (context) => KurirHome(),
         },
     );
   }

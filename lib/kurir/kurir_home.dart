@@ -8,9 +8,11 @@ import '../util/ETTER/restapi/config.dart';
 import '../util/ETTER/restapi/restapi.dart';
 
 class KurirHome extends StatefulWidget {
+
   final User kurir;
 
   const KurirHome({super.key, required this.kurir});
+
 
   @override
   _KurirHomeState createState() => _KurirHomeState();
