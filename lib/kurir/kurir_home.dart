@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 
 class KurirHome extends StatefulWidget {
+  final User kurir
+
+  const KurirHome({super.key, required this.kurir});
   
   @override
   KurirHomeState createState() => KurirHomeState();
