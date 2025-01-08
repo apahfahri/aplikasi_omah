@@ -47,7 +47,7 @@ class _KurirHomeState extends State<KurirHome> with SingleTickerProviderStateMix
   }
 
   List<PesananModel> filterPesanan(String status) {
-    return pesanan.where((item) => item.status_cuci == status).toList();
+    return pesanan.where((item) => item.status_pesanan == status).toList();
   }
 
   @override
