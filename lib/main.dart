@@ -1,5 +1,4 @@
-import 'package:aplikasi_omah/admin/dashboard.dart';
-import 'package:aplikasi_omah/kurir/kurir_home.dart';
+// import 'package:aplikasi_omah/admin/dashboard.dart';
 import 'package:aplikasi_omah/model/splash_screen.dart';
 import 'package:aplikasi_omah/pages/iklan.dart';
 import 'package:aplikasi_omah/pages/login.dart';

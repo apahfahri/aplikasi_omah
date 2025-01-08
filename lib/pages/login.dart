@@ -1,4 +1,6 @@
 
+import 'package:aplikasi_omah/admin/dashboard.dart';
+import 'package:aplikasi_omah/kurir/kurir_home.dart';
 import 'package:aplikasi_omah/pages/home.dart';
 import 'package:aplikasi_omah/util/fire_auth.dart';
 import 'package:aplikasi_omah/util/role_manage.dart';
@@ -199,6 +201,7 @@ class _LoginState extends State<Login> {
                                                 Navigator.of(context).pushReplacement(
               MaterialPageRoute(builder: (context) => KurirHome(kurir: user)));
                                                 // MaterialPageRoute(builder: (context) => Home(user: user));
+
                                                 break;
                                               default:
                                             }
