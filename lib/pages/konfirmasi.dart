@@ -39,7 +39,7 @@ class _KonfirmasiState extends State<Konfirmasi> {
             Container(
               alignment: Alignment.topLeft,
               padding: const EdgeInsets.all(10),
-              margin: const EdgeInsets.only(bottom: 20),
+              margin: const EdgeInsets.only(bottom: 7),
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(10),
@@ -62,7 +62,7 @@ class _KonfirmasiState extends State<Konfirmasi> {
             Container(
               alignment: Alignment.topLeft,
               padding: const EdgeInsets.all(10),
-              margin: const EdgeInsets.only(bottom: 20),
+              margin: const EdgeInsets.only(bottom: 7),
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(10),
@@ -84,7 +84,7 @@ class _KonfirmasiState extends State<Konfirmasi> {
             Container(
               alignment: Alignment.topLeft,
               padding: const EdgeInsets.all(10),
-              margin: const EdgeInsets.only(bottom: 20),
+              margin: const EdgeInsets.only(bottom: 7),
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(10),
@@ -112,7 +112,7 @@ class _KonfirmasiState extends State<Konfirmasi> {
             Container(
               alignment: Alignment.topLeft,
               padding: const EdgeInsets.all(10),
-              margin: const EdgeInsets.only(bottom: 20),
+              margin: const EdgeInsets.only(bottom: 7),
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(10),
@@ -135,7 +135,7 @@ class _KonfirmasiState extends State<Konfirmasi> {
             Container(
               alignment: Alignment.topLeft,
               padding: const EdgeInsets.all(10),
-              margin: const EdgeInsets.only(bottom: 20),
+              margin: const EdgeInsets.only(bottom: 7),
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(10),
