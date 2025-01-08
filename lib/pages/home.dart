@@ -202,14 +202,23 @@ class _HomeState extends State<Home> {
         ),
       ),
       bottomSheet: Container(
-        height: 130,
+        constraints: const BoxConstraints(maxHeight: 130),
+        padding: const EdgeInsets.all(10),
+        alignment: Alignment.topLeft,
+        decoration: BoxDecoration(
+          borderRadius: const BorderRadius.only(
+            topLeft: Radius.circular(20),
+            topRight: Radius.circular(20),
+          ),
+          color: Colors.lightBlue[50],
+        ),
         child: Column(
-          mainAxisSize: MainAxisSize.min,
           children: [
-            const Text(
-              'Pesanan Saat Ini',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-            ),
+            const Text('Pesanan Saat Ini',
+                style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black)),
             Card(
               elevation: 4,
               shape: RoundedRectangleBorder(
@@ -225,19 +234,56 @@ class _HomeState extends State<Home> {
                     fit: BoxFit.cover,
                   ),
                 ),
-                title: Text(
+                title: const Text(
                   "Order No: #",
-                  style: const TextStyle(fontWeight: FontWeight.bold),
+                  style: TextStyle(fontWeight: FontWeight.bold),
                 ),
                 subtitle: const Text(
-                  'tahi',
+                  'sedang dikirim',
                   style: TextStyle(color: Colors.blue),
                 ),
               ),
-            ),
+            )
           ],
         ),
       ),
+      // bottomSheet: Container(
+      //   height: 130,
+      //   child: Column(
+      //     mainAxisSize: MainAxisSize.min,
+      //     children: [
+      //       const Text(
+      //         'Pesanan Saat Ini',
+      //         style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+      //       ),
+      //       Card(
+      //         elevation: 4,
+      //         shape: RoundedRectangleBorder(
+      //           borderRadius: BorderRadius.circular(10),
+      //         ),
+      //         child: ListTile(
+      //           leading: ClipRRect(
+      //             borderRadius: BorderRadius.circular(8),
+      //             child: Image.asset(
+      //               "assets/images/delivery-truck.png",
+      //               width: 40,
+      //               height: 40,
+      //               fit: BoxFit.cover,
+      //             ),
+      //           ),
+      //           title: Text(
+      //             "Order No: #",
+      //             style: const TextStyle(fontWeight: FontWeight.bold),
+      //           ),
+      //           subtitle: const Text(
+      //             'tahi',
+      //             style: TextStyle(color: Colors.blue),
+      //           ),
+      //         ),
+      //       ),
+      //     ],
+      //   ),
+      // ),
     );
   }
 
@@ -260,7 +306,10 @@ class _HomeState extends State<Home> {
         //             Keranjang(layan: title, user: currentUser)));
 
         Navigator.push(
-            context, MaterialPageRoute(builder: (context) => Order(user: currentUser, pilihan: title)));
+            context,
+            MaterialPageRoute(
+                builder: (context) =>
+                    Order(user: currentUser, pilihan: title)));
       },
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
