@@ -3,6 +3,9 @@ import 'package:aplikasi_omah/admin/detailPesanan.dart';
 import 'package:flutter/material.dart';
 
 class PesananPage extends StatelessWidget {
+  final Map<String, dynamic>? orderData;
+  const PesananPage({Key? key, this.orderData}) : super(key: key);
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
