@@ -1,4 +1,5 @@
 import 'package:aplikasi_omah/admin/dashboard.dart';
+import 'package:aplikasi_omah/admin/detailPesanan.dart';
 import 'package:flutter/material.dart';
 
 class PesananPage extends StatelessWidget {
@@ -73,19 +74,40 @@ class PesananPage extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text('#ID Nama Pelanggan',
+                      Text(
+                        '#ID Nama Pelanggan',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.grey,
+                        ),
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => DetailPesananPage(),
+                            ),
+                          );
+                        },
+                        child: Text(
+                          'Detail',
                           style: TextStyle(
-                              fontWeight: FontWeight.bold, color: Colors.grey)),
-                      Text('Detail',
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              color: Colors.blue)),
+                            fontWeight: FontWeight.bold,
+                            color: Colors.blue,
+                          ),
+                        ),
+                      ),
                     ],
                   ),
                   SizedBox(height: 5),
-                  Text('Status',
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold, color: Colors.grey)),
+                  Text(
+                    'Status',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.grey,
+                    ),
+                  ),
                 ],
               ),
             ),
