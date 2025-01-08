@@ -8,12 +8,14 @@ class DetailPesananPage extends StatefulWidget {
 class _DetailPesananPageState extends State<DetailPesananPage> {
   final TextEditingController _quantityController =
       TextEditingController(text: '1');
-  String _selectedStatus = 'Proses Cuci';
+  String _selectedStatus = 'SIAP DIJEMPUT';
   final List<String> _statusOptions = [
-    'Proses Cuci',
-    'Selesai',
-    'Dikirim',
-    'Dibatalkan'
+    'PESANAN BARU',
+    'SIAP DIJEMPUT',
+    'PESANAN DIPROSES',
+    'DICUCI',
+    'SIAP DIANTAR',
+    'SEDANG DIKIRIM',
   ];
 
   @override
