@@ -43,7 +43,8 @@ class _LoginState extends State<Login> {
               MaterialPageRoute(builder: (context) => Dashboard(Admin: user)));
           break;
         case 'kurir':
-          Navigator.of(context).pushReplacementNamed('kurir_screen');
+          Navigator.of(context).pushReplacement(
+              MaterialPageRoute(builder: (context) => KurirHome(kurir: user)));
           // MaterialPageRoute(builder: (context) => Home(user: user));
           break;
         default:
@@ -191,15 +192,13 @@ class _LoginState extends State<Login> {
                                                                         user)));
                                                 break;
                                               case 'admin':
-                                                Navigator.of(context)
-                                                    .pushReplacementNamed(
-                                                        'admin_screen');
+                                                Navigator.of(context).pushReplacement(
+              MaterialPageRoute(builder: (context) => Dashboard(Admin: user)));
                                                 // MaterialPageRoute(builder: (context) => Home(user: user));
                                                 break;
                                               case 'kurir':
-                                                Navigator.of(context)
-                                                    .pushReplacementNamed(
-                                                        'kurir_screen');
+                                                Navigator.of(context).pushReplacement(
+              MaterialPageRoute(builder: (context) => KurirHome(kurir: user)));
                                                 // MaterialPageRoute(builder: (context) => Home(user: user));
                                                 break;
                                               default:
