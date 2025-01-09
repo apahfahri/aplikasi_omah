@@ -192,7 +192,7 @@ class OrderState extends State<Order> {
     if (_formKey.currentState!.validate()) {
       final pesanan = PesananModel(
         id: '-',
-        no: generateKodeBerdasarkanTanggal(),
+        no: DateTime.now().millisecondsSinceEpoch.toString(),
         pelanggan: nama_pelanggan.text,
         no_telpon: no_telpon.text,
         alamat: alamat.text,
@@ -247,12 +247,4 @@ class OrderState extends State<Order> {
     });
   }
 
-  String generateKodeBerdasarkanTanggal() {
-    var now = DateTime.now();
-    var formatter = DateFormat('yyyyMMddHHmmss');
-    String formattedDate =
-        formatter.format(now); 
-    String kode = formattedDate;
-    return kode;
-  }
 }
