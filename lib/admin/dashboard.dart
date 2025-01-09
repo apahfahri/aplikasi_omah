@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:aplikasi_omah/admin/detailPesanan.dart';
+import 'package:aplikasi_omah/admin/kurir.dart';
 import 'package:aplikasi_omah/kurir/kurir_home.dart';
 import 'package:aplikasi_omah/util/ETTER/model/pesanan_model.dart';
 import 'package:aplikasi_omah/util/ETTER/restapi/config.dart';
@@ -166,7 +167,7 @@ class _DashboardState extends State<Dashboard> {
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => KurirHome()),
+                  MaterialPageRoute(builder: (context) => KurirPage()),
                 );
               },
             ),

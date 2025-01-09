@@ -207,7 +207,7 @@ class OrderState extends State<Order> {
         status_pembayaran: 'Belum Bayar',
         total_harga: '0',
         nama_kurir: '-',
-      )
+      );
 
       Navigator.push(
         context,
