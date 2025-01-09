@@ -1,5 +1,9 @@
 import 'dart:convert';
+import 'package:aplikasi_omah/admin/detailPesanan.dart';
+import 'package:aplikasi_omah/kurir/kurir_home.dart';
+import 'package:aplikasi_omah/util/ETTER/model/pesanan_model.dart';
 import 'package:aplikasi_omah/util/ETTER/restapi/config.dart';
+import 'package:aplikasi_omah/util/fire_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:aplikasi_omah/util/ETTER/restapi/restapi.dart';
@@ -19,51 +23,72 @@ class Dashboard extends StatefulWidget {
 class _DashboardState extends State<Dashboard> {
   DataService ds = DataService();
   late User currentUser;
-  List<Map<String, dynamic>> orders = [];
-  List<Map<String, dynamic>> filteredOrders = [];
+
+  List data = [];
+  List<PesananModel> pesanan = [];
+
+  List<PesananModel> orders = [];
   String searchQuery = "";
+
+  selectAll() async {
+    data = jsonDecode(await ds.selectAll(token, project, 'pesanan', appid));
+    pesanan = data.map((e) => PesananModel.fromJson(e)).toList();
+
+    setState(() {
+      pesanan = pesanan;
+    });
+  }
+
+  selectFiltered() async {
+    data = jsonDecode(await ds.selectWhere(
+        token, project, 'pesanan', appid, 'status_pesanan', 'Pesanan Baru'));
+    pesanan = data.map((e) => PesananModel.fromJson(e)).toList();
+
+    setState(() {
+      pesanan = pesanan;
+    });
+  }
+
+  konfirmasi(dynamic id) async {
+    data = jsonDecode(await ds.updateId('status_pesanan', 'Siap dijemput',
+        token, project, 'pesanan', appid, id));
+    pesanan = data.map((e) => PesananModel.fromJson(e)).toList();
+
+    setState(() {
+      pesanan = pesanan;
+    });
+  }
+
+  Future reload(dynamic value) async {
+    setState(() {
+      selectFiltered();
+    });
+  }
 
   @override
   void initState() {
     super.initState();
     currentUser = widget.Admin;
-    fetchOrders();
-  }
-
-  Future<void> fetchOrders() async {
-    try {
-      final response = await ds.selectAll(token, project, 'pesanan', appid);
-      final decoded = jsonDecode(response);
-
-      if (decoded is List) {
-        setState(() {
-          orders = List<Map<String, dynamic>>.from(decoded);
-          filteredOrders = orders;
-        });
-      }
-    } catch (e) {
-      print('Error fetching orders: $e');
-    }
+    selectFiltered();
   }
 
   void _filterOrders(String query) {
     setState(() {
       searchQuery = query;
-      filteredOrders = orders
+      pesanan = orders
           .where((order) =>
-              order['pelanggan']
+              order.pelanggan
                   ?.toString()
                   .toLowerCase()
-                  .contains(query.toLowerCase()) ??
-              false ||
-                  (order['status_pesanan'] != null &&
-                      order['status_pesanan']
+                  .contains(query.toLowerCase()) ?? false ||
+                  (order.status_pesanan != null &&
+                      order.status_pesanan
                           .toString()
                           .toLowerCase()
                           .contains(query.toLowerCase())) ||
                   false ||
-                  (order['tanggal_penjemputan'] != null &&
-                      order['tanggal_penjemputan']
+                  (order.tgl_penjemputan != null &&
+                      order.tgl_penjemputan
                           .toString()
                           .toLowerCase()
                           .contains(query.toLowerCase())) ||
@@ -119,7 +144,9 @@ class _DashboardState extends State<Dashboard> {
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => PesananPage()),
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          PesananPage()),
                 );
               },
             ),
@@ -131,6 +158,24 @@ class _DashboardState extends State<Dashboard> {
                   context,
                   MaterialPageRoute(builder: (context) => AnalysisPage()),
                 );
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.people),
+              title: Text('Kurir'),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => KurirHome()),
+                );
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.logout),
+              title: Text('Logout'),
+              onTap: () {
+                FireAuth.logout();
+                Navigator.of(context).pushReplacementNamed('login_screen');
               },
             ),
           ],
@@ -187,24 +232,24 @@ class _DashboardState extends State<Dashboard> {
                       DataColumn(label: Text('Layanan')),
                       DataColumn(label: Text('Konfirmasi')),
                     ],
-                    rows: filteredOrders.map((order) {
+                    rows: pesanan.map((order) {
                       return DataRow(
                         cells: [
-                          DataCell(Text(order['pelanggan'] ?? 'N/A')),
-                          DataCell(Text(order['jenis_layanan'] ?? 'N/A')),
+                          DataCell(Text(order.pelanggan ?? 'N/A')),
+                          DataCell(Text(order.jenis_layanan ?? 'N/A')),
                           DataCell(
                             ElevatedButton(
                               onPressed: () {
+                                konfirmasi(order.id);
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) =>
-                                        PesananPage(orderData: order),
+                                    builder: (context) => PesananPage(),
                                   ),
-                                );
+                                ).then(reload);
                               },
                               style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.lightBlue, // Warna tombol
+                                backgroundColor: Colors.lightBlue,
                               ),
                               child: Text(
                                 'Konfirmasi',
@@ -224,43 +269,24 @@ class _DashboardState extends State<Dashboard> {
       ),
     );
   }
-}
 
-Widget _buildButton(String text, Color color, VoidCallback onPressed) {
-  return GestureDetector(
-    onTap: onPressed,
-    child: Container(
-      width: 172,
-      height: 80,
-      decoration: BoxDecoration(
-        color: color,
-        borderRadius: BorderRadius.circular(10),
-      ),
-      child: Center(
-        child: Text(
-          text,
-          style: TextStyle(color: Colors.white, fontSize: 18),
+  Widget _buildButton(String text, Color color, VoidCallback onPressed) {
+    return GestureDetector(
+      onTap: onPressed,
+      child: Container(
+        width: 173,
+        height: 80,
+        decoration: BoxDecoration(
+          color: color,
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Center(
+          child: Text(
+            text,
+            style: TextStyle(color: Colors.white, fontSize: 18),
+          ),
         ),
       ),
-    ),
-  );
-}
-
-Widget _buildTableHeader(String text) {
-  return Padding(
-    padding: const EdgeInsets.all(8.0),
-    child: Center(
-      child: Text(
-        text,
-        style: TextStyle(fontWeight: FontWeight.bold),
-      ),
-    ),
-  );
-}
-
-Widget _buildTableCell(String text) {
-  return Padding(
-    padding: const EdgeInsets.all(8.0),
-    child: Center(child: Text(text)),
-  );
+    );
+  }
 }
