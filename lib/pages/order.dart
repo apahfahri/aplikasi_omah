@@ -217,19 +217,19 @@ class OrderState extends State<Order> {
       List<PesananModel> pesanan = [
         PesananModel(
           id: '-',
-          no: 0,
+          no: '0',
           pelanggan: nama_pelanggan.text,
           no_telpon: no_telpon.text,
           alamat: alamat.text,
           jenis_layanan: pilihan,
-          jumlah_layanan: jumlah_layanan,
+          jumlah_layanan: jumlah_layanan.toString(),
           jam_penjemputan: jam_penjemputan.text,
           tgl_penjemputan: tgl_penjemputan.text,
           tgl_pengantaran: '-',
           status_pesanan: 'Pesanan Baru',
           metode_pembayaran: pilihan_pembayaran,
           status_pembayaran: 'Belum Bayar',
-          total_harga: 0,
+          total_harga: '0',
           nama_kurir: '-',
         ),
       ];

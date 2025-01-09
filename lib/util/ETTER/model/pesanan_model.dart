@@ -1,18 +1,18 @@
 class PesananModel {
    final String id;
-   final int no;
+   final String no;
    final String pelanggan;
    final String no_telpon;
    final String alamat;
    final String jenis_layanan;
-   final int jumlah_layanan;
+   final String jumlah_layanan;
    final String jam_penjemputan;
    final String tgl_penjemputan;
    final String tgl_pengantaran;
    final String status_pesanan;
    final String metode_pembayaran;
    final String status_pembayaran;
-   final double total_harga;
+   final String total_harga;
    final String nama_kurir;
 
    PesananModel({
