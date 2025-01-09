@@ -1,80 +1,166 @@
 import 'package:flutter/material.dart';
-import 'package:fl_chart/fl_chart.dart';
 
-class AnalysisPage extends StatefulWidget {
-  @override
-  _AnalysisPageState createState() => _AnalysisPageState();
-}
-
-class _AnalysisPageState extends State<AnalysisPage> {
-  // Static sample data
-  List<Map<String, dynamic>> data = [
-    {'month': 1, 'total_orders': 100, 'service_name': 'Service A', 'usage_percentage': 40.0},
-    {'month': 2, 'total_orders': 120, 'service_name': 'Service B', 'usage_percentage': 30.0},
-    {'month': 3, 'total_orders': 140, 'service_name': 'Service C', 'usage_percentage': 50.0},
-    {'month': 4, 'total_orders': 160, 'service_name': 'Service D', 'usage_percentage': 60.0},
-  ];
-
-  LineChartData lineChartData() {
-    return LineChartData(
-      gridData: FlGridData(show: true),
-      titlesData: FlTitlesData(show: true),
-      borderData: FlBorderData(show: true),
-      lineBarsData: [
-        LineChartBarData(
-          spots: data.map((item) => FlSpot(item['month'].toDouble(), item['total_orders'].toDouble())).toList(),
-          isCurved: true,
-          color: Colors.blue,
-          dotData: FlDotData(show: false),
-          belowBarData: BarAreaData(show: false),
-        ),
-      ],
-    );
-  }
-
-  PieChartData pieChartData() {
-    return PieChartData(
-      sections: data.map((item) {
-        return PieChartSectionData(
-          value: item['usage_percentage'].toDouble(),
-          title: '${item['service_name']}',
-          color: Colors.green,
-        );
-      }).toList(),
-    );
-  }
-
+class AnalisisPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Data Analysis')),
-      body: ListView(
-        padding: const EdgeInsets.all(8.0),
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(bottom: 12.0),
-            child: Text(
-              'Line Chart: Total Orders per Month',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-          ),
-          Container(
-            height: 250,
-            child: LineChart(lineChartData()),
-          ),
-          SizedBox(height: 20),
-          Padding(
-            padding: const EdgeInsets.only(bottom: 12.0),
-            child: Text(
-              'Pie Chart: Service Usage Percentage',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-          ),
-          Container(
-            height: 250,
-            child: PieChart(pieChartData()),
+      appBar: AppBar(
+        title: Text('Dashboard Analisis'),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.notifications),
+            onPressed: () {
+              // Aksi untuk notifikasi
+            },
           ),
         ],
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Widget Info Ringkas
+            InfoCards(),
+            SizedBox(height: 20),
+            // Bagian Analitik
+            Expanded(
+              child: Row(
+                children: [
+                  Expanded(
+                    flex: 2,
+                    child: AnalyticsChart(),
+                  ),
+                  SizedBox(width: 16),
+                  Expanded(
+                    flex: 1,
+                    child: RecentActivity(),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// Widget Info Cards
+class InfoCards extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        InfoCard(title: 'Users', count: '1,245', icon: Icons.people),
+        InfoCard(title: 'Sales', count: '320', icon: Icons.shopping_cart),
+        InfoCard(title: 'Revenue', count: '\$12.4k', icon: Icons.monetization_on),
+      ],
+    );
+  }
+}
+
+class InfoCard extends StatelessWidget {
+  final String title;
+  final String count;
+  final IconData icon;
+
+  const InfoCard({
+    required this.title,
+    required this.count,
+    required this.icon,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      elevation: 4,
+      child: Container(
+        width: 120,
+        padding: EdgeInsets.all(16.0),
+        child: Column(
+          children: [
+            Icon(icon, size: 36, color: Colors.blue),
+            SizedBox(height: 10),
+            Text(
+              title,
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+            SizedBox(height: 5),
+            Text(
+              count,
+              style: TextStyle(fontSize: 16, color: Colors.black54),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// Widget Analytics Chart (Simulasi)
+class AnalyticsChart extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      elevation: 4,
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Analytics Overview',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            SizedBox(height: 20),
+            Container(
+              height: 200,
+              color: Colors.blue.shade50,
+              child: Center(
+                child: Text('Chart Placeholder'),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// Widget Recent Activity
+class RecentActivity extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      elevation: 4,
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Recent Activity',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            SizedBox(height: 10),
+            Expanded(
+              child: ListView.builder(
+                itemCount: 5,
+                itemBuilder: (context, index) {
+                  return ListTile(
+                    leading: CircleAvatar(
+                      child: Icon(Icons.event),
+                    ),
+                    title: Text('Activity ${index + 1}'),
+                    subtitle: Text('Details of activity ${index + 1}'),
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

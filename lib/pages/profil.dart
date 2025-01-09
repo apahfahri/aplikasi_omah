@@ -25,6 +25,12 @@ class _ProfilState extends State<Profil> {
       appBar: AppBar(
         backgroundColor: const Color.fromARGB(255, 235, 243, 254),
         elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.black),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
         title: const Text(
           ' PROFIL ',
           style: TextStyle(

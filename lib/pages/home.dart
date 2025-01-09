@@ -244,33 +244,35 @@ class _HomeState extends State<Home> {
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
                     color: Colors.black)),
-            Card(
-              elevation: 4,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: ListTile(
-                leading: ClipRRect(
-                  borderRadius: BorderRadius.circular(8),
-                  child: Image.asset(
-                    "assets/images/delivery-truck.png",
-                    width: 40,
-                    height: 40,
-                    fit: BoxFit.cover,
-                  ),
-                ),
-                title: Text(
-                  "Order No: #${pesanan.first.no}",
-                  // "Order No: #${pesanan.last.no}",
-                  style: const TextStyle(fontWeight: FontWeight.bold),
-                ),
-                subtitle: Text(
-                  pesanan.first.status_pesanan,
-                  // pesanan.last.status_pesanan,
-                  style: const TextStyle(color: Colors.blue),
-                ),
-              ),
-            )
+            pesanan.isEmpty
+                ? const Center(child: Text('Anda tidak memiliki pesanan'))
+                : Card(
+                    elevation: 4,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: ListTile(
+                      leading: ClipRRect(
+                        borderRadius: BorderRadius.circular(8),
+                        child: Image.asset(
+                          "assets/images/delivery-truck.png",
+                          width: 40,
+                          height: 40,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                      title: Text(
+                        "Order No: #${pesanan.first.no}",
+                        // "Order No: #${pesanan.last.no}",
+                        style: const TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      subtitle: Text(
+                        pesanan.first.status_pesanan,
+                        // pesanan.last.status_pesanan,
+                        style: const TextStyle(color: Colors.blue),
+                      ),
+                    ),
+                  )
           ],
         ),
       ),
