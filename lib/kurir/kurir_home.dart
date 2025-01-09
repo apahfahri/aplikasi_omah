@@ -1,76 +1,53 @@
 import 'dart:convert';
 
-import 'package:aplikasi_omah/kurir/kurir_detail_jemput.dart';
-import 'package:aplikasi_omah/kurir/kurir_profil.dart';
 import 'package:aplikasi_omah/util/ETTER/model/pesanan_model.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+
 import '../util/ETTER/restapi/config.dart';
 import '../util/ETTER/restapi/restapi.dart';
 
 class KurirHome extends StatefulWidget {
+
   final User kurir;
 
   const KurirHome({super.key, required this.kurir});
+
 
   @override
   _KurirHomeState createState() => _KurirHomeState();
 }
 
-class _KurirHomeState extends State<KurirHome> {
-  bool isLogout = false;
+class _KurirHomeState extends State<KurirHome> with SingleTickerProviderStateMixin {
+  late TabController _tabController;
   late User currentUser;
-  int _selectedIndex = 0;
-  final List<String> _tabs = ["Siap dijemput", "Siap diantar", "Selesai"];
 
   DataService ds = DataService();
-  List data = [];
   List<PesananModel> pesanan = [];
-
-  selectAll() async {
-    data = jsonDecode(await ds.selectAll(token, project, 'pesanan', appid));
-    pesanan = data.map((e) => PesananModel.fromJson(e)).toList();
-
-    setState(() {
-      pesanan = pesanan;
-    });
-  }
-
-  selectKategori(dynamic value) async {
-    data = jsonDecode(await ds.selectWhere(
-        token, project, 'pesanan', appid, 'status_pesanan', value));
-    pesanan = data.map((e) => PesananModel.fromJson(e)).toList();
-
-    setState(() {
-      pesanan = pesanan;
-    });
-  }
-
-  Future reloadData(dynamic valye) async {
-    setState(() {
-      selectAll();
-    });
-  }
-
 
   @override
   void initState() {
     currentUser = widget.kurir;
+    _tabController = TabController(length: 3, vsync: this);
     selectAll();
     super.initState();
   }
 
-  Future<void> _logout() async {
-    try {
-      await FirebaseAuth.instance.signOut();
-      Navigator.pushReplacementNamed(context, 'login_screen');
-    } catch (e) {
-      print('Error logging out: $e');
-    }
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
+  }
+
+  Future<void> selectAll() async {
+    final data = jsonDecode(await ds.selectAll(token, project, 'pesanan', appid));
+    setState(() {
+      pesanan = data.map<PesananModel>((e) => PesananModel.fromJson(e)).toList();
+    });
+  }
 
   List<PesananModel> filterPesanan(String status) {
     return pesanan.where((item) => item.status_pesanan == status).toList();
-
   }
 
   @override
@@ -82,19 +59,6 @@ class _KurirHomeState extends State<KurirHome> {
         elevation: 0,
         title: Row(
           children: [
-            CircleAvatar(
-              backgroundColor: Colors.blue,
-              child: IconButton(
-                icon: const Icon(Icons.person, color: Colors.white),
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => ProfilKurirPage()),
-                  );
-                },
-              ),
-            ),
-            SizedBox(width: 25),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -108,98 +72,61 @@ class _KurirHomeState extends State<KurirHome> {
                 ),
               ],
             ),
-          ],
-        ),
-        bottom: PreferredSize(
-          preferredSize: Size.fromHeight(60.0),
-          child: Padding(
-            padding: const EdgeInsets.all(10.0),
-            child: TextField(
-              decoration: InputDecoration(
-                hintText: 'Cari alamat...',
-                prefixIcon: Icon(Icons.search, color: Colors.grey),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
-                  borderSide: BorderSide.none,
-                ),
-                filled: true,
-                fillColor: Colors.white,
+            const Spacer(),
+            CircleAvatar(
+              backgroundColor: Colors.blue,
+              child: IconButton(
+                icon: const Icon(Icons.person, color: Colors.white),
+                onPressed: () {
+                  // Tambahkan navigasi ke halaman profil
+                },
               ),
             ),
-          ),
+          ],
+        ),
+        bottom: TabBar(
+          controller: _tabController,
+          labelColor: Colors.blue,
+          unselectedLabelColor: Colors.black,
+          indicatorColor: Colors.blue,
+          tabs: const [
+            Tab(text: "Jemput"),
+            Tab(text: "Antar"),
+            Tab(text: "Selesai"),
+          ],
         ),
         iconTheme: const IconThemeData(color: Colors.black),
       ),
-      body: Column(
+      body: TabBarView(
+        controller: _tabController,
         children: [
-          // Tab bar untuk "Jemput", "Antar", "Selesai"
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 20.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: List.generate(_tabs.length, (index) {
-                return GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      _selectedIndex = index;
-                      selectKategori(_tabs[index]);
-                    });
-                  },
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 5, vertical: 8),
-                    child: Container(
-                        padding:
-                            EdgeInsets.symmetric(vertical: 5, horizontal: 17),
-                        decoration: BoxDecoration(
-                          color: _selectedIndex == index
-                              ? Colors.blue[100]
-                              : Colors.transparent,
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: Column(
-                          children: [
-                            Text(
-                              _tabs[index],
-                              style: TextStyle(
-                                color: _selectedIndex == index
-                                    ? Colors.blue
-                                    : Colors.black,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ],
-                        )),
-                  ),
-                );
-              }),
-            ),
-          ),
-          Expanded(
-            child: ListView.builder(
-              itemCount: pesanan.length,
-              itemBuilder: (context, index) {
-                final item = pesanan[index];
-                return ListTile(
-                  title: Text(item.pelanggan),
-                  subtitle: Text(item.tgl_penjemputan),
-                  onTap: () {
-                    Navigator.pushNamed(context, 'kurir_detail_jemput',
-                        arguments: [item.id]).then(reloadData);
-                    // Navigator.push(
-                    //   context,
-                    //   MaterialPageRoute(
-                    //     builder: (context) => kurir_(pesanan: pesanan),
-                    //   ),
-                    // );
-                  },
-                );
-              },
-            ),
-          ),
+          buildPesananList(filterPesanan("Jemput")),
+          buildPesananList(filterPesanan("Antar")),
+          buildPesananList(filterPesanan("Selesai")),
         ],
       ),
     );
   }
 
-  
+  Widget buildPesananList(List<PesananModel> pesananList) {
+    if (pesananList.isEmpty) {
+      return const Center(
+        child: Text("Tidak ada pesanan"),
+      );
+    }
+
+    return ListView.builder(
+      itemCount: pesananList.length,
+      itemBuilder: (context, index) {
+        final pesanan = pesananList[index];
+        return ListTile(
+          title: Text(pesanan.nama_kurir),
+          subtitle: Text(pesanan.alamat),
+          onTap: () {
+            // Tambahkan navigasi ke detail pesanan
+          },
+        );
+      },
+    );
+  }
 }
