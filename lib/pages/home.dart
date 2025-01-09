@@ -4,6 +4,8 @@ import 'dart:convert';
 
 // import 'package:aplikasi_omah/pages/keranjang.dart';
 import 'package:aplikasi_omah/pages/order.dart';
+import 'package:aplikasi_omah/pages/profil.dart';
+import 'package:aplikasi_omah/pages/riwayat.dart';
 import 'package:aplikasi_omah/util/ETTER/model/pesanan_model.dart';
 import 'package:aplikasi_omah/util/ETTER/restapi/restapi.dart';
 import 'package:aplikasi_omah/util/fire_auth.dart';
@@ -58,7 +60,7 @@ class _HomeState extends State<Home> {
   @override
   void initState() {
     currentUser = widget.user;
-    // selectOne();
+    selectOne();
     super.initState();
   }
 
@@ -87,20 +89,33 @@ class _HomeState extends State<Home> {
       drawer: Drawer(
         child: ListView(
           children: <Widget>[
-            UserAccountsDrawerHeader(
-              decoration: const BoxDecoration(color: Colors.blue),
-              accountName: Text(currentUser.displayName ?? 'Username'),
-              accountEmail: Text(currentUser.email ?? 'Email'),
-              currentAccountPicture: const CircleAvatar(
-                backgroundColor: Colors.white,
-                child: Icon(Icons.person, size: 50, color: Colors.blue),
+            GestureDetector(
+              onTap: () {
+                Navigator.pushReplacement(context, MaterialPageRoute(
+                  builder: (context) {
+                    return Profil(user: currentUser);
+                  },
+                ));
+              },
+              child: UserAccountsDrawerHeader(
+                decoration: const BoxDecoration(color: Colors.blue),
+                accountName: Text(currentUser.displayName ?? 'Username'),
+                accountEmail: Text(currentUser.email ?? 'Email'),
+                currentAccountPicture: const CircleAvatar(
+                  backgroundColor: Colors.white,
+                  child: Icon(Icons.person, size: 50, color: Colors.blue),
+                ),
               ),
             ),
             ListTile(
-              leading: const Icon(Icons.home),
-              title: const Text('Home'),
+              leading: const Icon(Icons.history),
+              title: const Text('Riwayat Pesanan'),
               onTap: () {
-                // Aksi sesuai
+                Navigator.push(context, MaterialPageRoute(
+                  builder: (context) {
+                    return Riwayat(user: currentUser);
+                  },
+                ));
               },
             ),
             ListTile(
@@ -201,15 +216,34 @@ class _HomeState extends State<Home> {
           ),
         ),
       ),
+      // bottomSheet: ElevatedButton(
+      //   onPressed: () {
+      //     Navigator.push(context, MaterialPageRoute(
+      //       builder: (context) {
+      //         return Riwayat(user: currentUser);
+      //       },
+      //     ));
+      //   },
+      //   child: const Text('Riwayat Pesanan'),
+      // ),
       bottomSheet: Container(
-        height: 130,
+        constraints: const BoxConstraints(maxHeight: 130),
+        padding: const EdgeInsets.all(10),
+        alignment: Alignment.topLeft,
+        decoration: BoxDecoration(
+          borderRadius: const BorderRadius.only(
+            topLeft: Radius.circular(20),
+            topRight: Radius.circular(20),
+          ),
+          color: Colors.lightBlue[50],
+        ),
         child: Column(
-          mainAxisSize: MainAxisSize.min,
           children: [
-            const Text(
-              'Pesanan Saat Ini',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-            ),
+            const Text('Pesanan Saat Ini',
+                style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black)),
             Card(
               elevation: 4,
               shape: RoundedRectangleBorder(
@@ -226,15 +260,17 @@ class _HomeState extends State<Home> {
                   ),
                 ),
                 title: Text(
-                  "Order No: #",
+                  "Order No: #${pesanan.first.no}",
+                  // "Order No: #${pesanan.last.no}",
                   style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
-                subtitle: const Text(
-                  'tahi',
-                  style: TextStyle(color: Colors.blue),
+                subtitle: Text(
+                  pesanan.first.status_pesanan,
+                  // pesanan.last.status_pesanan,
+                  style: const TextStyle(color: Colors.blue),
                 ),
               ),
-            ),
+            )
           ],
         ),
       ),
@@ -260,7 +296,10 @@ class _HomeState extends State<Home> {
         //             Keranjang(layan: title, user: currentUser)));
 
         Navigator.push(
-            context, MaterialPageRoute(builder: (context) => Order(user: currentUser, pilihan: title)));
+            context,
+            MaterialPageRoute(
+                builder: (context) =>
+                    Order(user: currentUser, pilihan: title)));
       },
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
