@@ -1,16 +1,66 @@
-import 'package:aplikasi_omah/admin/dashboard.dart';
+import 'dart:convert';
+
 import 'package:aplikasi_omah/admin/detailPesanan.dart';
+import 'package:aplikasi_omah/util/ETTER/model/pesanan_model.dart';
+import 'package:aplikasi_omah/util/ETTER/restapi/config.dart';
+import 'package:aplikasi_omah/util/ETTER/restapi/restapi.dart';
 import 'package:flutter/material.dart';
 
-class PesananPage extends StatelessWidget {
+class PesananPage extends StatefulWidget {
+  const PesananPage({super.key});
+  
+  @override
+  _PesananState createState() => _PesananState();
+}
+
+class _PesananState extends State<PesananPage> {
+  DataService ds = DataService();
+  
+  List data = [];
+  List<PesananModel> pesanan = [];
+
+  List<PesananModel> orders = [];
+  String searchQuery = "";
+
+  selectAll() async {
+    data = jsonDecode(await ds.selectAll(token, project, 'pesanan', appid));
+    pesanan = data.map((e) => PesananModel.fromJson(e)).toList();
+
+    setState(() {
+      pesanan = pesanan;
+    });
+  }
+
+  selectFiltered() async {
+    data = jsonDecode(await ds.selectWhere(
+        token, project, 'pesanan', appid, 'status_pesanan', 'Pesanan Baru'));
+    pesanan = data.map((e) => PesananModel.fromJson(e)).toList();
+
+    setState(() {
+      pesanan = pesanan;
+    });
+  }
+
+  Future reload(dynamic value) async {
+    setState(() {
+      selectAll();
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    selectAll();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFFE9F4FF),
+      backgroundColor: const Color(0xFFE9F4FF),
       appBar: AppBar(
-        backgroundColor: Color(0xFFE9F4FF),
+        backgroundColor: const Color(0xFFE9F4FF),
         elevation: 0,
-        title: Text(
+        title: const Text(
           'PESANAN',
           style: TextStyle(
             fontSize: 18,
@@ -20,7 +70,7 @@ class PesananPage extends StatelessWidget {
         ),
         centerTitle: true,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.black),
+          icon: const Icon(Icons.arrow_back, color: Colors.black),
           onPressed: () {
             Navigator.pop(context);
           },
@@ -36,7 +86,7 @@ class PesananPage extends StatelessWidget {
                 Expanded(
                   child: TextField(
                     decoration: InputDecoration(
-                      prefixIcon: Icon(Icons.search),
+                      prefixIcon: const Icon(Icons.search),
                       hintText: 'Search',
                       fillColor: Colors.white,
                       filled: true,
@@ -47,85 +97,86 @@ class PesananPage extends StatelessWidget {
                     ),
                   ),
                 ),
-                SizedBox(width: 10),
+                const SizedBox(width: 10),
                 ElevatedButton(
                   onPressed: () {},
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.white,
                     elevation: 1,
                   ),
-                  child: Text(
+                  child: const Text(
                     'Sort',
                     style: TextStyle(color: Colors.black),
                   ),
                 ),
               ],
             ),
-            SizedBox(height: 20),
-            Container(
-              padding: EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        '#ID Nama Pelanggan',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: Colors.grey,
-                        ),
-                      ),
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => DetailPesananPage(),
-                            ),
-                          );
-                        },
-                        child: Text(
-                          'Detail',
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: Colors.blue,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 5),
-                  Text(
-                    'Status',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.grey,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            SizedBox(height: 10),
+            const SizedBox(height: 20),
             Expanded(
-              child: ListView.builder(
-                itemCount: 6,
-                itemBuilder: (context, index) {
-                  return Container(
-                    margin: EdgeInsets.only(bottom: 10),
-                    height: 60,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(10),
+              child: pesanan.isEmpty
+                  ? const Center(
+                      child: Text(
+                        'Tidak ada pesanan yang terkonfirmasi.',
+                        style: TextStyle(fontSize: 16, color: Colors.grey),
+                      ),
+                    )
+                  : ListView.builder(
+                      itemCount: pesanan.length,
+                      itemBuilder: (context, index) {
+                        final item = pesanan[index];
+                        return Container(
+                          margin: const EdgeInsets.only(bottom: 10),
+                          padding: const EdgeInsets.all(12),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    '#ID ${item.pelanggan ?? 'N/A'}',
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.grey,
+                                    ),
+                                  ),
+                                  GestureDetector(
+                                    onTap: () {
+                                      // Navigator.push(
+                                      //   context,
+                                      //   MaterialPageRoute(
+                                      //     builder: (context) =>
+                                      //         DetailPesananPage(pesanan: pesanan[pesanan.indexOf(order)].toJson()),
+                                      //   ),
+                                      // );
+                                    },
+                                    child: const Text(
+                                      'Detail',
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.blue,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 5),
+                              Text(
+                                'Status: ${item.status_pesanan ?? 'N/A'}',
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.grey,
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
+                      },
                     ),
-                  );
-                },
-              ),
             ),
           ],
         ),
