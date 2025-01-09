@@ -190,7 +190,6 @@ class OrderState extends State<Order> {
 
   void _submitForm() {
     if (_formKey.currentState!.validate()) {
-
       final pesanan = PesananModel(
         id: '-',
         no: DateTime.now().millisecondsSinceEpoch.toString(),
@@ -207,7 +206,7 @@ class OrderState extends State<Order> {
         status_pembayaran: 'Belum Bayar',
         total_harga: '0',
         nama_kurir: '-',
-      )
+      );
 
       Navigator.push(
         context,
