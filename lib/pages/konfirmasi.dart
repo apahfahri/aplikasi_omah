@@ -175,7 +175,7 @@ class _KonfirmasiState extends State<Konfirmasi> {
                               onPressed: () async {
                                 jsonDecode(await ds.insertPesanan(
                                   appid,
-                                  '',
+                                  widget.pesanan.no,
                                   widget.pesanan.pelanggan,
                                   widget.pesanan.no_telpon,
                                   widget.pesanan.alamat,

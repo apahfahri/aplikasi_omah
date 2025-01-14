@@ -1,4 +1,6 @@
 
+// ignore_for_file: library_private_types_in_public_api, use_build_context_synchronously
+
 import 'package:aplikasi_omah/admin/dashboard.dart';
 import 'package:aplikasi_omah/kurir/kurir_home.dart';
 import 'package:aplikasi_omah/pages/home.dart';
@@ -208,6 +210,7 @@ class _LoginState extends State<Login> {
                                           }
                                         }
                                       } catch (e) {
+                                        // ignore: avoid_print
                                         print(e);
                                       }
                                     },
