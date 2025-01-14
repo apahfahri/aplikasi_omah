@@ -52,7 +52,6 @@ class _KurirHomeState extends State<KurirHome> {
     });
   }
 
-
   @override
   void initState() {
     currentUser = widget.kurir;
@@ -68,9 +67,9 @@ class _KurirHomeState extends State<KurirHome> {
       print('Error logging out: $e');
     }
 
-  List<PesananModel> filterPesanan(String status) {
-    return pesanan.where((item) => item.status_pesanan == status).toList();
-
+    List<PesananModel> filterPesanan(String status) {
+      return pesanan.where((item) => item.status_pesanan == status).toList();
+    }
   }
 
   @override
@@ -201,6 +200,4 @@ class _KurirHomeState extends State<KurirHome> {
       ),
     );
   }
-
-  
 }
