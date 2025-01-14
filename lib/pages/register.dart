@@ -1,3 +1,5 @@
+// ignore_for_file: library_private_types_in_public_api, use_build_context_synchronously
+
 import 'package:aplikasi_omah/util/fire_auth.dart';
 import 'package:aplikasi_omah/util/validator.dart';
 import 'package:flutter/material.dart';
@@ -166,6 +168,7 @@ class _RegisterState extends State<Register> {
                                   }
                                 }
                               } catch (e) {
+                                // ignore: avoid_print
                                 print(e);
                               }
                             },

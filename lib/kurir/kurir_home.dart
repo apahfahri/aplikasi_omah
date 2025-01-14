@@ -25,30 +25,6 @@ class _KurirHomeState extends State<KurirHome> with SingleTickerProviderStateMix
   DataService ds = DataService();
   List<PesananModel> pesanan = [];
 
-  selectAll() async {
-    data = jsonDecode(await ds.selectAll(token, project, 'pesanan', appid));
-    pesanan = data.map((e) => PesananModel.fromJson(e)).toList();
-
-    setState(() {
-      pesanan = pesanan;
-    });
-  }
-
-  selectKategori(dynamic value) async {
-    data = jsonDecode(await ds.selectWhere(
-        token, project, 'pesanan', appid, 'status_pesanan', value));
-    pesanan = data.map((e) => PesananModel.fromJson(e)).toList();
-
-    setState(() {
-      pesanan = pesanan;
-    });
-  }
-
-  Future reloadData(dynamic valye) async {
-    setState(() {
-      selectAll();
-    });
-  }
   @override
   void initState() {
     currentUser = widget.kurir;
@@ -70,10 +46,8 @@ class _KurirHomeState extends State<KurirHome> with SingleTickerProviderStateMix
     });
   }
 
-
-    List<PesananModel> filterPesanan(String status) {
-      return pesanan.where((item) => item.status_pesanan == status).toList();
-    }
+  List<PesananModel> filterPesanan(String status) {
+    return pesanan.where((item) => item.status_pesanan == status).toList();
   }
 
   @override
@@ -134,4 +108,25 @@ class _KurirHomeState extends State<KurirHome> with SingleTickerProviderStateMix
     );
   }
 
+  Widget buildPesananList(List<PesananModel> pesananList) {
+    if (pesananList.isEmpty) {
+      return const Center(
+        child: Text("Tidak ada pesanan"),
+      );
+    }
+
+    return ListView.builder(
+      itemCount: pesananList.length,
+      itemBuilder: (context, index) {
+        final pesanan = pesananList[index];
+        return ListTile(
+          title: Text(pesanan.nama_kurir),
+          subtitle: Text(pesanan.alamat),
+          onTap: () {
+            // Tambahkan navigasi ke detail pesanan
+          },
+        );
+      },
+    );
+  }
 }

@@ -38,10 +38,10 @@ class MainApp extends StatelessWidget {
       ),
       initialRoute: 'splash_screen',
         routes: {
-          'splash_screen' : (context) => SplashScreen(),
+          'splash_screen' : (context) => const SplashScreen(),
           'iklan_screen' : (context) => Iklan(),
-          'login_screen' : (context) => Login(),
-          'register_screen' : (context) => Register(),
+          'login_screen' : (context) => const Login(),
+          'register_screen' : (context) => const Register(),
           // 'home_screen' : (context) => Home(),
         },
     );
