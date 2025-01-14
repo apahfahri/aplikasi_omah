@@ -75,6 +75,7 @@ class _KurirHomeState extends State<KurirHome> {
       appBar: AppBar(
         backgroundColor: Colors.lightBlue[50],
         elevation: 0,
+        centerTitle: false,
         title: Row(
           children: [
             CircleAvatar(
