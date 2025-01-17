@@ -31,6 +31,17 @@ class Validator {
     return null;
   }
 
+  static String? validateJumlah({required int? value}) {
+    if (value == null) {
+      return null;
+    }
+
+    if (value <= 0) {
+      return 'Jumlah tidak boleh kurang dari 1';
+    }
+    return null;
+  }
+
   static String? validateEmail({required String? email}) {
     if (email == null) {
       return null;

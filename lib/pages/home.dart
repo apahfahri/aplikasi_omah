@@ -43,7 +43,7 @@ class _HomeState extends State<Home> {
 
   selectOne() async {
     data = jsonDecode(await ds.selectWhere(token, project, 'pesanan', appid,
-        'pelanggan', currentUser.displayName.toString()));
+        'uid_pelanggan', currentUser.uid));
     pesanan = data.map((e) => PesananModel.fromJson(e)).toList();
 
     setState(() {
@@ -59,9 +59,9 @@ class _HomeState extends State<Home> {
 
   @override
   void initState() {
+    super.initState();
     currentUser = widget.user;
     selectOne();
-    super.initState();
   }
 
   @override
@@ -255,19 +255,19 @@ class _HomeState extends State<Home> {
                       leading: ClipRRect(
                         borderRadius: BorderRadius.circular(8),
                         child: Image.asset(
-                          "assets/images/delivery-truck.png",
+                          "assets/images/ikon laundry/${pesanan.last.status_pesanan}.png",
                           width: 40,
                           height: 40,
                           fit: BoxFit.cover,
                         ),
                       ),
                       title: Text(
-                        "Order No: #${pesanan.first.no}",
+                        "Order No: #${pesanan.last.no}",
                         // "Order No: #${pesanan.last.no}",
                         style: const TextStyle(fontWeight: FontWeight.bold),
                       ),
                       subtitle: Text(
-                        pesanan.first.status_pesanan,
+                        pesanan.last.status_pesanan,
                         // pesanan.last.status_pesanan,
                         style: const TextStyle(color: Colors.blue),
                       ),
