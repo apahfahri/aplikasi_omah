@@ -4,6 +4,7 @@ import 'package:aplikasi_omah/admin/detailPesanan.dart';
 import 'package:aplikasi_omah/util/ETTER/model/pesanan_model.dart';
 import 'package:aplikasi_omah/util/ETTER/restapi/config.dart';
 import 'package:aplikasi_omah/util/ETTER/restapi/restapi.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class PesananPage extends StatefulWidget {
@@ -15,11 +16,12 @@ class PesananPage extends StatefulWidget {
 
 class _PesananState extends State<PesananPage> {
   DataService ds = DataService();
+  late User currentUser;
   
   List data = [];
   List<PesananModel> pesanan = [];
 
-  List<PesananModel> orders = [];
+  // List<PesananModel> orders = [];
   String searchQuery = "";
 
   selectAll() async {
@@ -146,13 +148,12 @@ class _PesananState extends State<PesananPage> {
                                   ),
                                   GestureDetector(
                                     onTap: () {
-                                      // Navigator.push(
-                                      //   context,
-                                      //   MaterialPageRoute(
-                                      //     builder: (context) =>
-                                      //         DetailPesananPage(pesanan: pesanan[pesanan.indexOf(order)].toJson()),
-                                      //   ),
-                                      // );
+                                       Navigator.push(
+                                         context,
+                                         MaterialPageRoute(
+                                           builder: (context) => DetailPesananPage(id: item.id),
+                                         ),
+                                       );
                                     },
                                     child: const Text(
                                       'Detail',

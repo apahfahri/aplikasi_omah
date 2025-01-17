@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'package:aplikasi_omah/admin/detailPesanan.dart';
 import 'package:aplikasi_omah/admin/kurir.dart';
-import 'package:aplikasi_omah/kurir/kurir_home.dart';
 import 'package:aplikasi_omah/util/ETTER/model/pesanan_model.dart';
 import 'package:aplikasi_omah/util/ETTER/restapi/config.dart';
 import 'package:aplikasi_omah/util/fire_auth.dart';
@@ -28,7 +27,7 @@ class _DashboardState extends State<Dashboard> {
   List data = [];
   List<PesananModel> pesanan = [];
 
-  List<PesananModel> orders = [];
+  // List<PesananModel> orders = [];
   String searchQuery = "";
 
   selectAll() async {
@@ -76,20 +75,21 @@ class _DashboardState extends State<Dashboard> {
   void _filterOrders(String query) {
     setState(() {
       searchQuery = query;
-      pesanan = orders
-          .where((order) =>
-              order.pelanggan
+      pesanan = pesanan
+          .where((pesanan) =>
+              pesanan.pelanggan
                   ?.toString()
                   .toLowerCase()
-                  .contains(query.toLowerCase()) ?? false ||
-                  (order.status_pesanan != null &&
-                      order.status_pesanan
+                  .contains(query.toLowerCase()) ??
+              false ||
+                  (pesanan.status_pesanan != null &&
+                      pesanan.status_pesanan
                           .toString()
                           .toLowerCase()
                           .contains(query.toLowerCase())) ||
                   false ||
-                  (order.tgl_penjemputan != null &&
-                      order.tgl_penjemputan
+                  (pesanan.tgl_penjemputan != null &&
+                      pesanan.tgl_penjemputan
                           .toString()
                           .toLowerCase()
                           .contains(query.toLowerCase())) ||
@@ -145,9 +145,7 @@ class _DashboardState extends State<Dashboard> {
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(
-                      builder: (context) =>
-                          PesananPage()),
+                  MaterialPageRoute(builder: (context) => PesananPage()),
                 );
               },
             ),
@@ -217,7 +215,7 @@ class _DashboardState extends State<Dashboard> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                _buildButton('Total Order', Colors.lightBlueAccent, () {}),
+                _buildButton('Total Pesanan', Colors.lightBlueAccent, () {}),
                 _buildButton(' Total Income', Colors.lightBlueAccent, () {}),
               ],
             ),
@@ -229,30 +227,31 @@ class _DashboardState extends State<Dashboard> {
                   scrollDirection: Axis.vertical,
                   child: DataTable(
                     columns: const [
-                      DataColumn(label: Text('Order ID')),
+                      DataColumn(label: Text('ID Pesanan')),
                       DataColumn(label: Text('Layanan')),
                       DataColumn(label: Text('Konfirmasi')),
                     ],
-                    rows: pesanan.map((order) {
+                    rows: pesanan.map((pesanan) {
                       return DataRow(
                         cells: [
-                          DataCell(Text(order.pelanggan ?? 'N/A')),
-                          DataCell(Text(order.jenis_layanan ?? 'N/A')),
+                          DataCell(Text(pesanan.pelanggan ?? 'N/A')),
+                          DataCell(Text(pesanan.jenis_layanan ?? 'N/A')),
                           DataCell(
                             ElevatedButton(
                               onPressed: () {
-                                konfirmasi(order.id);
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) => PesananPage(),
+                                    builder: (context) => DetailPesananPage(
+                                      id: pesanan.id,
+                                    ),
                                   ),
-                                ).then(reload);
+                                ).then((value) => reload(value));
                               },
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Colors.lightBlue,
                               ),
-                              child: Text(
+                              child: const Text(
                                 'Konfirmasi',
                                 style: TextStyle(color: Colors.white),
                               ),
