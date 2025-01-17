@@ -189,6 +189,7 @@ class _KonfirmasiState extends State<Konfirmasi> {
                                   widget.pesanan.status_pembayaran,
                                   '0',
                                   widget.pesanan.nama_kurir,
+                                  widget.pesanan.uid_pelanggan,
                                 ));
                                 // List<PesananModel> konfirmasiPesanan = pesanan
                                 //     .map((e) => PesananModel.fromJson(e))
