@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import '../util/ETTER/model/pesanan_model.dart';
+import 'package:aplikasi_omah/util/ETTER/model/pesanan_model.dart';
 
-class KurirDetailAntar extends StatelessWidget {
+class KurirDetailSelesai extends StatelessWidget {
   final PesananModel pesanan;
 
-  const KurirDetailAntar({super.key, required this.pesanan});
+  const KurirDetailSelesai({super.key, required this.pesanan});
 
   @override
   Widget build(BuildContext context) {
@@ -27,18 +27,24 @@ class KurirDetailAntar extends StatelessWidget {
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Kontainer utama untuk detail pesanan
-            Expanded(
-              child: Container(
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(16),
+        child: SingleChildScrollView(
+          child: Container(
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(16),
+            ),
+            child: Stack(
+              children: [
+                // Watermark ceklis hijau di tengah kontainer
+                Center(
+                  child: Icon(
+                    Icons.check_circle,
+                    color: Colors.green.withOpacity(0.2),
+                    size: 120,
+                  ),
                 ),
-                child: Column(
+                Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     // Informasi pelanggan
@@ -80,25 +86,6 @@ class KurirDetailAntar extends StatelessWidget {
                           '${pesanan.jumlah_layanan}x',
                           style: const TextStyle(fontSize: 14),
                         ),
-                      ],
-                    ),
-                    const SizedBox(height: 16),
-
-                    const Text(
-                      'Metode Pembayaran',
-                      style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const Divider(),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          pesanan.metode_pembayaran,
-                          style: const TextStyle(fontSize: 14),
-                        ),                        
                       ],
                     ),
                     const SizedBox(height: 16),
@@ -144,35 +131,9 @@ class KurirDetailAntar extends StatelessWidget {
                     ),
                   ],
                 ),
-              ),
+              ],
             ),
-            const SizedBox(height: 20),
-            // Tombol selesai di luar kontainer
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: () {
-                  // Logika saat tombol selesai ditekan
-                  Navigator.pop(context);
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.green,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                ),
-                child: const Text(
-                  'Selesai',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-            ),
-          ],
+          ),
         ),
       ),
     );

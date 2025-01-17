@@ -1,6 +1,8 @@
 import 'dart:convert';
 
+import 'package:aplikasi_omah/kurir/kurir_detail_antar.dart';
 import 'package:aplikasi_omah/kurir/kurir_detail_jemput.dart';
+import 'package:aplikasi_omah/kurir/kurir_detail_selesai.dart';
 import 'package:aplikasi_omah/kurir/kurir_profil.dart';
 import 'package:aplikasi_omah/util/ETTER/model/pesanan_model.dart';
 import 'package:flutter/material.dart';
@@ -21,7 +23,14 @@ class _KurirHomeState extends State<KurirHome> {
   bool isLogout = false;
   late User currentUser;
   int _selectedIndex = 0;
-  final List<String> _tabs = ["Siap dijemput", "Siap diantar", "Selesai"];
+  final List<String> _tabs = [
+    "Siap dijemput",
+    "Sedang dijemput",
+    "Telah dijemput",
+    "Siap diantar",
+    "Sedang diantar",
+    "Pesanan telah sampai"
+  ];
 
   DataService ds = DataService();
   List data = [];
@@ -46,7 +55,7 @@ class _KurirHomeState extends State<KurirHome> {
     });
   }
 
-  Future reloadData(dynamic valye) async {
+  Future reloadAllData(dynamic value) async {
     setState(() {
       selectAll();
     });
@@ -55,8 +64,25 @@ class _KurirHomeState extends State<KurirHome> {
   @override
   void initState() {
     currentUser = widget.kurir;
-    selectAll();
+    selectKategori(_tabs[_selectedIndex]);
     super.initState();
+  }
+
+  selectKategoriByValue(dynamic value) async {
+    data = jsonDecode(await ds.selectWhere(
+        token, project, 'pesanan', appid, 'status_pesanan', value));
+    pesanan = data.map((e) => PesananModel.fromJson(e)).toList();
+
+    setState(() {
+      pesanan = pesanan; // Memperbarui daftar pesanan dengan data yang difilter
+    });
+  }
+
+  Future reloadData(dynamic value) async {
+    setState(() {
+      selectKategoriByValue(
+          _tabs[_selectedIndex]); // Memuat ulang data sesuai tab aktif
+    });
   }
 
   Future<void> _logout() async {
@@ -110,68 +136,71 @@ class _KurirHomeState extends State<KurirHome> {
             ),
           ],
         ),
-        bottom: PreferredSize(
-          preferredSize: Size.fromHeight(60.0),
-          child: Padding(
-            padding: const EdgeInsets.all(10.0),
-            child: TextField(
-              decoration: InputDecoration(
-                hintText: 'Cari alamat...',
-                prefixIcon: Icon(Icons.search, color: Colors.grey),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
-                  borderSide: BorderSide.none,
-                ),
-                filled: true,
-                fillColor: Colors.white,
-              ),
-            ),
-          ),
-        ),
+        // bottom: PreferredSize(
+        //   preferredSize: Size.fromHeight(60.0),
+        //   child: Padding(
+        //     padding: const EdgeInsets.all(10.0),
+        //     child: TextField(
+        //       decoration: InputDecoration(
+        //         hintText: 'Cari alamat...',
+        //         prefixIcon: Icon(Icons.search, color: Colors.grey),
+        //         border: OutlineInputBorder(
+        //           borderRadius: BorderRadius.circular(10),
+        //           borderSide: BorderSide.none,
+        //         ),
+        //         filled: true,
+        //         fillColor: Colors.white,
+        //       ),
+        //     ),
+        //   ),
+        // ),
         iconTheme: const IconThemeData(color: Colors.black),
       ),
       body: Column(
         children: [
           // Tab bar untuk "Jemput", "Antar", "Selesai"
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 20.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: List.generate(_tabs.length, (index) {
-                return GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      _selectedIndex = index;
-                      selectKategori(_tabs[index]);
-                    });
-                  },
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 5, vertical: 8),
-                    child: Container(
-                        padding:
-                            EdgeInsets.symmetric(vertical: 5, horizontal: 17),
-                        decoration: BoxDecoration(
-                          color: _selectedIndex == index
-                              ? Colors.blue[100]
-                              : Colors.transparent,
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: Column(
-                          children: [
-                            Text(
-                              _tabs[index],
-                              style: TextStyle(
-                                color: _selectedIndex == index
-                                    ? Colors.blue
-                                    : Colors.black,
-                                fontWeight: FontWeight.bold,
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 20.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: List.generate(_tabs.length, (index) {
+                  return GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        _selectedIndex = index;
+                        selectKategori(_tabs[index]);
+                      });
+                    },
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 5, vertical: 8),
+                      child: Container(
+                          padding:
+                              EdgeInsets.symmetric(vertical: 5, horizontal: 17),
+                          decoration: BoxDecoration(
+                            color: _selectedIndex == index
+                                ? Colors.blue[100]
+                                : Colors.transparent,
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: Column(
+                            children: [
+                              Text(
+                                _tabs[index],
+                                style: TextStyle(
+                                  color: _selectedIndex == index
+                                      ? Colors.blue
+                                      : Colors.black,
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
-                            ),
-                          ],
-                        )),
-                  ),
-                );
-              }),
+                            ],
+                          )),
+                    ),
+                  );
+                }),
+              ),
             ),
           ),
           Expanded(
@@ -179,19 +208,71 @@ class _KurirHomeState extends State<KurirHome> {
               itemCount: pesanan.length,
               itemBuilder: (context, index) {
                 final item = pesanan[index];
-                return ListTile(
-                  title: Text(item.pelanggan),
-                  subtitle: Text(item.tgl_penjemputan),
+                return GestureDetector(
                   onTap: () {
-                    Navigator.pushNamed(context, 'kurir_detail_jemput',
-                        arguments: [item.id]).then(reloadData);
-                    // Navigator.push(
-                    //   context,
-                    //   MaterialPageRoute(
-                    //     builder: (context) => kurir_(pesanan: pesanan),
-                    //   ),
-                    // );
+                    if (_tabs[_selectedIndex] == "Siap dijemput" ||
+                        _tabs[_selectedIndex] == "Sedang dijemput" ||
+                        _tabs[_selectedIndex] == "Telah dijemput") {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              KurirDetailJemput(pesanan: item),
+                        ),
+                        ).then((_) => reloadData(_tabs[_selectedIndex]));
+                    } else if (_tabs[_selectedIndex] == "Siap diantar") {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => KurirDetailAntar(pesanan: item),
+                        ),
+                      ).then((_) => reloadData(_tabs[_selectedIndex]));
+                    } else if (_tabs[_selectedIndex] == "Selesai") {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              KurirDetailSelesai(pesanan: item),
+                        ),
+                      ).then((_) => reloadData(_tabs[_selectedIndex]));
+                    }
                   },
+                  child: Container(
+                    margin: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                    padding: EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(10),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.3),
+                          spreadRadius: 2,
+                          blurRadius: 5,
+                          offset: Offset(0, 3),
+                        ),
+                      ],
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          item.pelanggan,
+                          style: TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.bold),
+                        ),
+                        SizedBox(height: 5),
+                        Text(
+                          "Tanggal Penjemputan: ${item.tgl_penjemputan}",
+                          style: TextStyle(color: Colors.grey[700]),
+                        ),
+                        SizedBox(height: 5),
+                        Text(
+                          "Alamat: ${item.alamat}",
+                          style: TextStyle(color: Colors.grey[700]),
+                        ),
+                      ],
+                    ),
+                  ),
                 );
               },
             ),
