@@ -14,6 +14,7 @@ class PesananModel {
    final String status_pembayaran;
    final String total_harga;
    final String nama_kurir;
+   final String uid_pelanggan;
 
    PesananModel({
       required this.id,
@@ -30,7 +31,8 @@ class PesananModel {
       required this.metode_pembayaran,
       required this.status_pembayaran,
       required this.total_harga,
-      required this.nama_kurir
+      required this.nama_kurir,
+      required this.uid_pelanggan
    });
 
    factory PesananModel.fromJson(Map data) {
@@ -49,7 +51,8 @@ class PesananModel {
          metode_pembayaran: data['metode_pembayaran'],
          status_pembayaran: data['status_pembayaran'],
          total_harga: data['total_harga'],
-         nama_kurir: data['nama_kurir']
+         nama_kurir: data['nama_kurir'],
+         uid_pelanggan: data['uid_pelanggan']
       );
    }
 }

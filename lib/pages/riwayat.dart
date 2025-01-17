@@ -32,7 +32,7 @@ class _RiwayatState extends State<Riwayat> {
 
   selectWhere(String value) async {
     data = jsonDecode(await ds.selectWhere(
-        token, project, 'pesanan', appid, 'pelanggan', value));
+        token, project, 'pesanan', appid, 'uid_pelanggan', value));
     pesanan = data.map((e) => PesananModel.fromJson(e)).toList();
 
     setState(() {
@@ -59,13 +59,13 @@ class _RiwayatState extends State<Riwayat> {
 
   Future reloadData(dynamic valye) async {
     setState(() {
-      selectWhere(widget.user.displayName ?? '');
+      selectWhere(widget.user.uid);
     });
   }
 
   @override
   void initState() {
-    selectWhere(widget.user.displayName ?? '');
+    selectWhere(widget.user.uid);
     super.initState();
   }
 
@@ -116,9 +116,11 @@ class _RiwayatState extends State<Riwayat> {
                             fontSize: 20,
                           ),
                         ),
+                        Text('Nama Pelanggan\t: ${item.pelanggan}'),
+                        Text('Jenis Layanan\t: ${item.jenis_layanan} ${item.jumlah_layanan}x'),
                         Text('Harga\t: ${item.total_harga}'),
-                        Text('Tanggal Penjemputan\t: ${item.tgl_penjemputan}'),
-                        Text('Tanggal Pengantaran\t: ${item.tgl_pengantaran}'),
+                        // Text('Tanggal Penjemputan\t: ${item.tgl_penjemputan}'),
+                        // Text('Tanggal Pengantaran\t: ${item.tgl_pengantaran}'),
                         Text('Status Pesanan\t: ${item.status_pesanan}'),
                       ],
                     ),

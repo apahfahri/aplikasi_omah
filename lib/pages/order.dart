@@ -206,6 +206,7 @@ class OrderState extends State<Order> {
         status_pembayaran: 'Belum Bayar',
         total_harga: '0',
         nama_kurir: '-',
+        uid_pelanggan: currentUser.uid,
       );
 
       Navigator.push(
