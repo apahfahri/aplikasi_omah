@@ -14,17 +14,14 @@ Future<void> main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  runApp(
-    DevicePreview(
-      enabled: !kReleaseMode,
-      builder: (context) => const MainApp(),)
-    );
+  runApp(DevicePreview(
+    enabled: !kReleaseMode,
+    builder: (context) => const MainApp(),
+  ));
 }
 
 class MainApp extends StatelessWidget {
   const MainApp({super.key});
-
-  
 
   @override
   Widget build(BuildContext context) {
@@ -37,13 +34,13 @@ class MainApp extends StatelessWidget {
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
       initialRoute: 'splash_screen',
-        routes: {
-          'splash_screen' : (context) => const SplashScreen(),
-          'iklan_screen' : (context) => Iklan(),
-          'login_screen' : (context) => const Login(),
-          'register_screen' : (context) => const Register(),
-          // 'home_screen' : (context) => Home(),
-        },
+      routes: {
+        'splash_screen': (context) => const SplashScreen(),
+        'iklan_screen': (context) => Iklan(),
+        'login_screen': (context) => const Login(),
+        'register_screen': (context) => const Register(),
+        // 'home_screen' : (context) => Home(),
+      },
     );
   }
 }
