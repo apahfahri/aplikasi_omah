@@ -26,6 +26,7 @@ class _DashboardState extends State<Dashboard> {
 
   List data = [];
   List<PesananModel> pesanan = [];
+  List<PesananModel> filteredPesanan = [];
 
   // List<PesananModel> orders = [];
   String searchQuery = "";
@@ -35,7 +36,7 @@ class _DashboardState extends State<Dashboard> {
     pesanan = data.map((e) => PesananModel.fromJson(e)).toList();
 
     setState(() {
-      pesanan = pesanan;
+      filteredPesanan = pesanan;
     });
   }
 
@@ -45,7 +46,7 @@ class _DashboardState extends State<Dashboard> {
     pesanan = data.map((e) => PesananModel.fromJson(e)).toList();
 
     setState(() {
-      pesanan = pesanan;
+      filteredPesanan = pesanan;
     });
   }
 
@@ -55,7 +56,7 @@ class _DashboardState extends State<Dashboard> {
     pesanan = data.map((e) => PesananModel.fromJson(e)).toList();
 
     setState(() {
-      pesanan = pesanan;
+      filteredPesanan = pesanan;
     });
   }
 
@@ -74,27 +75,13 @@ class _DashboardState extends State<Dashboard> {
 
   void _filterOrders(String query) {
     setState(() {
-      searchQuery = query;
-      pesanan = pesanan
-          .where((pesanan) =>
-              pesanan.pelanggan
-                  ?.toString()
-                  .toLowerCase()
-                  .contains(query.toLowerCase()) ??
-              false ||
-                  (pesanan.status_pesanan != null &&
-                      pesanan.status_pesanan
-                          .toString()
-                          .toLowerCase()
-                          .contains(query.toLowerCase())) ||
-                  false ||
-                  (pesanan.tgl_penjemputan != null &&
-                      pesanan.tgl_penjemputan
-                          .toString()
-                          .toLowerCase()
-                          .contains(query.toLowerCase())) ||
-                  false)
-          .toList();
+      searchQuery = query.toLowerCase();
+      filteredPesanan = pesanan.where((pesanan) {
+        final pelangganLower = pesanan.pelanggan?.toLowerCase() ?? '';
+        final jenisLayananLower = pesanan.jenis_layanan?.toLowerCase() ?? '';
+        return pelangganLower.contains(searchQuery) ||
+            jenisLayananLower.contains(searchQuery);
+      }).toList();
     });
   }
 
@@ -186,31 +173,51 @@ class _DashboardState extends State<Dashboard> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Container(
-              width: double.infinity,
-              height: 40,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                      child: TextField(
-                        decoration: const InputDecoration(
-                          border: InputBorder.none,
-                          hintText: 'Search',
-                          hintStyle: TextStyle(color: Colors.grey),
+                width: double.infinity,
+                height: 40,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 16.0), 
+                        child: TextField(
+                          decoration: const InputDecoration(
+                            border: InputBorder.none,
+                            // hintText: 'Search',
+                            hintStyle: TextStyle(
+                                color: Colors.grey,
+                                fontSize: 12), 
+                            contentPadding: EdgeInsets.symmetric(vertical: 12),
+                          ),
+                          onChanged: _filterOrders,
                         ),
-                        onChanged: _filterOrders,
                       ),
                     ),
-                  ),
-                  const Icon(Icons.search, color: Colors.grey),
-                ],
-              ),
-            ),
+                    Container(
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        shape: BoxShape.circle,
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey.withOpacity(0.5),
+                            spreadRadius: 2,
+                            blurRadius: 5,
+                            offset: const Offset(0, 3),
+                          ),
+                        ],
+                      ),
+                      child: const Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Icon(Icons.search, color: Colors.grey),
+                      ),
+                    ),
+                  ],
+                )),
             SizedBox(height: 20),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -227,11 +234,17 @@ class _DashboardState extends State<Dashboard> {
                   scrollDirection: Axis.vertical,
                   child: DataTable(
                     columns: const [
-                      DataColumn(label: Text('ID Pesanan')),
-                      DataColumn(label: Text('Layanan')),
-                      DataColumn(label: Text('Konfirmasi')),
+                      DataColumn(
+                          label: Text('Pelanggan',
+                              style: TextStyle(fontWeight: FontWeight.bold))),
+                      DataColumn(
+                          label: Text('Layanan',
+                              style: TextStyle(fontWeight: FontWeight.bold))),
+                      DataColumn(
+                          label: Text('Konfirmasi',
+                              style: TextStyle(fontWeight: FontWeight.bold))),
                     ],
-                    rows: pesanan.map((pesanan) {
+                    rows: filteredPesanan.map((pesanan) {
                       return DataRow(
                         cells: [
                           DataCell(Text(pesanan.pelanggan ?? 'N/A')),
@@ -243,7 +256,7 @@ class _DashboardState extends State<Dashboard> {
                                   context,
                                   MaterialPageRoute(
                                     builder: (context) => DetailPesananPage(
-                                      id: pesanan.id,
+                                      pesanan: pesanan,
                                     ),
                                   ),
                                 ).then((value) => reload(value));
@@ -251,9 +264,10 @@ class _DashboardState extends State<Dashboard> {
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Colors.lightBlue,
                               ),
-                              child: const Text(
-                                'Konfirmasi',
-                                style: TextStyle(color: Colors.white),
+                              child: const Icon(
+                                Icons.check_rounded,
+                                color: Colors.white,
+                                size: 24,
                               ),
                             ),
                           ),

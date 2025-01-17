@@ -162,16 +162,17 @@ class _PesananState extends State<PesananPage> {
                       itemBuilder: (context, index) {
                         final item = filteredPesanan[index];
                         return GestureDetector(
-                          onTap: () async {
-                            final result = await Navigator.push(
+                          onTap: ()  {
+                            // final result = await 
+                            Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => DetailPesananPage(id: item.id),
+                                builder: (context) => DetailPesananPage(pesanan: item),
                               ),
                             );
-                            if (result == true) {
-                              selectAll();
-                            }
+                            // if (result == true) {
+                            //   selectAll();
+                            // }
                           },
                           child: Container(
                             margin: const EdgeInsets.only(bottom: 10),
