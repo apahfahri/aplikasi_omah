@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:aplikasi_omah/pages/detail.dart';
 import 'package:aplikasi_omah/util/ETTER/model/pesanan_model.dart';
 import 'package:aplikasi_omah/util/ETTER/restapi/config.dart';
 import 'package:aplikasi_omah/util/ETTER/restapi/restapi.dart';
@@ -9,7 +10,7 @@ import 'package:flutter/material.dart';
 class Riwayat extends StatefulWidget {
   final User user;
 
-  const Riwayat({Key? key, required this.user}) : super(key: key);
+  const Riwayat({super.key, required this.user});
 
   @override
   _RiwayatState createState() => _RiwayatState();
@@ -24,40 +25,23 @@ class _RiwayatState extends State<Riwayat> {
   selectAll() async {
     data = jsonDecode(await ds.selectAll(token, project, 'pesanan', appid));
     pesanan = data.map((e) => PesananModel.fromJson(e)).toList();
-
-    setState(() {
-      pesanan = pesanan;
-    });
+    _sortPesanan();
+    setState(() {});
   }
 
   selectWhere(String value) async {
     data = jsonDecode(await ds.selectWhere(
         token, project, 'pesanan', appid, 'uid_pelanggan', value));
     pesanan = data.map((e) => PesananModel.fromJson(e)).toList();
-
-    setState(() {
-      pesanan = pesanan;
-    });
+    _sortPesanan();
+    setState(() {});
   }
 
-  // void filterpesanan(String enteredKeyword) {
+  _sortPesanan() {
+    pesanan.sort((b, a) => a.no.compareTo(b.no));
+  }
 
-  //   if (enteredKeyword.isEmpty) {
-  //     search_data = data.map((e) => pesananModel.fromJson(e)).toList();
-  //   } else {
-  //     search_data_pre = data.map((e) => pesananModel.fromJson(e)).toList();
-  //     search_data = search_data_pre
-  //         .where((user) =>
-  //             user.deskripsi.toLowerCase().contains(enteredKeyword.toLowerCase()))
-  //         .toList();
-  //   }
-
-  //   setState(() {
-  //     pesanan = search_data;
-  //   });
-  // }
-
-  Future reloadData(dynamic valye) async {
+  Future reloadData(dynamic value) async {
     setState(() {
       selectWhere(widget.user.uid);
     });
@@ -90,41 +74,44 @@ class _RiwayatState extends State<Riwayat> {
               itemBuilder: (context, index) {
                 final item = pesanan[index];
 
-                // return ListTile(
-                //   title: Text(item.jenis_layanan),
-                //   subtitle: Text(item.status_pesanan),
-                //   onTap: () {},
-                // );
-
-                return Padding(
-                  padding: const EdgeInsets.all(5.0),
-                  child: Container(
-                    alignment: Alignment.topLeft,
-                    padding: const EdgeInsets.all(10),
-                    margin: const EdgeInsets.only(bottom: 2),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Text(
-                          'Data Pesanan:',
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 20,
+                return GestureDetector(
+                  child: Padding(
+                    padding: const EdgeInsets.all(5.0),
+                    child: Container(
+                      alignment: Alignment.topLeft,
+                      padding: const EdgeInsets.all(10),
+                      margin: const EdgeInsets.only(bottom: 2),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text(
+                            'Data Pesanan:',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 20,
+                            ),
                           ),
-                        ),
-                        Text('Nama Pelanggan\t: ${item.pelanggan}'),
-                        Text('Jenis Layanan\t: ${item.jenis_layanan} ${item.jumlah_layanan}x'),
-                        Text('Harga\t: ${item.total_harga}'),
-                        // Text('Tanggal Penjemputan\t: ${item.tgl_penjemputan}'),
-                        // Text('Tanggal Pengantaran\t: ${item.tgl_pengantaran}'),
-                        Text('Status Pesanan\t: ${item.status_pesanan}'),
-                      ],
+                          Text('Nama Pelanggan\t: ${item.pelanggan}'),
+                          Text(
+                              'Jenis Layanan\t: ${item.jenis_layanan} ${item.jumlah_layanan}x'),
+                          Text('Harga\t: ${item.total_harga}'),
+                          Text('Status Pesanan\t: ${item.status_pesanan}'),
+                        ],
+                      ),
                     ),
                   ),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => Detail(pesanan: item),
+                      ),
+                    );
+                  },
                 );
               },
             ),
