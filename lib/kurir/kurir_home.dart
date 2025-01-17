@@ -1,8 +1,8 @@
 import 'dart:convert';
 
-import 'package:aplikasi_omah/kurir/kurir_detail_antar.dart';
+// import 'package:aplikasi_omah/kurir/kurir_detail_antar.dart';
 import 'package:aplikasi_omah/kurir/kurir_detail_jemput.dart';
-import 'package:aplikasi_omah/kurir/kurir_detail_selesai.dart';
+// import 'package:aplikasi_omah/kurir/kurir_detail_selesai.dart';
 import 'package:aplikasi_omah/kurir/kurir_profil.dart';
 import 'package:aplikasi_omah/util/ETTER/model/pesanan_model.dart';
 import 'package:flutter/material.dart';
@@ -29,20 +29,18 @@ class _KurirHomeState extends State<KurirHome> {
     "Telah dijemput",
     "Siap diantar",
     "Sedang diantar",
-    "Pesanan telah sampai"
+    "Selesai"
   ];
 
   DataService ds = DataService();
   List data = [];
   List<PesananModel> pesanan = [];
 
-  selectAll() async {
-    data = jsonDecode(await ds.selectAll(token, project, 'pesanan', appid));
-    pesanan = data.map((e) => PesananModel.fromJson(e)).toList();
-
-    setState(() {
-      pesanan = pesanan;
-    });
+  @override
+  void initState() {
+    currentUser = widget.kurir;
+    selectKategori(_tabs[_selectedIndex]);
+    super.initState();
   }
 
   selectKategori(dynamic value) async {
@@ -55,48 +53,12 @@ class _KurirHomeState extends State<KurirHome> {
     });
   }
 
-  Future reloadAllData(dynamic value) async {
-    setState(() {
-      selectAll();
-    });
+  Future<void> reloadData() async {
+    // Update status dan reload data berdasarkan kategori yang dipilih
+    await selectKategori(_tabs[_selectedIndex]);
   }
 
-  @override
-  void initState() {
-    currentUser = widget.kurir;
-    selectKategori(_tabs[_selectedIndex]);
-    super.initState();
-  }
-
-  selectKategoriByValue(dynamic value) async {
-    data = jsonDecode(await ds.selectWhere(
-        token, project, 'pesanan', appid, 'status_pesanan', value));
-    pesanan = data.map((e) => PesananModel.fromJson(e)).toList();
-
-    setState(() {
-      pesanan = pesanan; // Memperbarui daftar pesanan dengan data yang difilter
-    });
-  }
-
-  Future reloadData(dynamic value) async {
-    setState(() {
-      selectKategoriByValue(
-          _tabs[_selectedIndex]); // Memuat ulang data sesuai tab aktif
-    });
-  }
-
-  Future<void> _logout() async {
-    try {
-      await FirebaseAuth.instance.signOut();
-      Navigator.pushReplacementNamed(context, 'login_screen');
-    } catch (e) {
-      print('Error logging out: $e');
-    }
-
-    List<PesananModel> filterPesanan(String status) {
-      return pesanan.where((item) => item.status_pesanan == status).toList();
-    }
-  }
+  
 
   @override
   Widget build(BuildContext context) {
@@ -115,7 +77,7 @@ class _KurirHomeState extends State<KurirHome> {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => ProfilKurirPage()),
+                    MaterialPageRoute(builder: (context) => ProfilKurirPage(user: currentUser,)),
                   );
                 },
               ),
@@ -136,6 +98,14 @@ class _KurirHomeState extends State<KurirHome> {
             ),
           ],
         ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.refresh, color: Colors.black),
+            onPressed: () {
+              reloadData();
+            },
+          ),
+        ],
         // bottom: PreferredSize(
         //   preferredSize: Size.fromHeight(60.0),
         //   child: Padding(
@@ -209,34 +179,75 @@ class _KurirHomeState extends State<KurirHome> {
               itemBuilder: (context, index) {
                 final item = pesanan[index];
                 return GestureDetector(
-                  onTap: () {
-                    if (_tabs[_selectedIndex] == "Siap dijemput" ||
-                        _tabs[_selectedIndex] == "Sedang dijemput" ||
-                        _tabs[_selectedIndex] == "Telah dijemput") {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) =>
-                              KurirDetailJemput(pesanan: item),
-                        ),
-                        ).then((_) => reloadData(_tabs[_selectedIndex]));
-                    } else if (_tabs[_selectedIndex] == "Siap diantar") {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => KurirDetailAntar(pesanan: item),
-                        ),
-                      ).then((_) => reloadData(_tabs[_selectedIndex]));
-                    } else if (_tabs[_selectedIndex] == "Selesai") {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) =>
-                              KurirDetailSelesai(pesanan: item),
-                        ),
-                      ).then((_) => reloadData(_tabs[_selectedIndex]));
+                  onTap: () async {
+                    final result = await Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => KurirDetailJemput(
+                            pesanan: item, reloadData: reloadData),
+                      ),
+                    );
+                    if (result == true) {
+                      reloadData();
                     }
+                    // if (_tabs[_selectedIndex] == "Siap dijemput" ||
+                    //     _tabs[_selectedIndex] == "Sedang dijemput" ||
+                    //     _tabs[_selectedIndex] == "Telah dijemput") {
+                    //   final result = await Navigator.push(
+                    //     context,
+                    //     MaterialPageRoute(
+                    //       builder: (context) => KurirDetailJemput(
+                    //           pesanan: item, reloadData: reloadData),
+                    //     ),
+                    //   );
+                    //   if (result == true) {
+                    //     reloadData();
+                    //   }
+                    // } else if (_tabs[_selectedIndex] == "Siap diantar") {
+                    //   Navigator.push(
+                    //     context,
+                    //     MaterialPageRoute(
+                    //       builder: (context) => KurirDetailAntar(pesanan: item),
+                    //     ),
+                    //   );
+                    // } else if (_tabs[_selectedIndex] == "Selesai") {
+                    //   Navigator.push(
+                    //     context,
+                    //     MaterialPageRoute(
+                    //       builder: (context) =>
+                    //           KurirDetailSelesai(pesanan: item),
+                    //     ),
+                    //   );
+                    // }
                   },
+                  // onTap: () async {
+                  //   if (_tabs[_selectedIndex] == "Siap dijemput" ||
+                  //       _tabs[_selectedIndex] == "Sedang dijemput" ||
+                  //       _tabs[_selectedIndex] == "Telah dijemput") {
+                  //     Navigator.push(
+                  //       context,
+                  //       MaterialPageRoute(
+                  //         builder: (context) =>
+                  //             KurirDetailJemput(pesanan: item, reloadData: reloadData),
+                  //       ),
+                  //     );
+                  //   } else if (_tabs[_selectedIndex] == "Siap diantar") {
+                  //     Navigator.push(
+                  //       context,
+                  //       MaterialPageRoute(
+                  //         builder: (context) => KurirDetailAntar(pesanan: item),
+                  //       ),
+                  //     );
+                  //   } else if (_tabs[_selectedIndex] == "Selesai") {
+                  //     Navigator.push(
+                  //       context,
+                  //       MaterialPageRoute(
+                  //         builder: (context) =>
+                  //             KurirDetailSelesai(pesanan: item),
+                  //       ),
+                  //     );
+                  //   }
+                  // },
                   child: Container(
                     margin: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                     padding: EdgeInsets.all(10),
