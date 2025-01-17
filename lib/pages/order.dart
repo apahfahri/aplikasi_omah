@@ -146,26 +146,85 @@ class OrderState extends State<Order> {
   Widget buildNumberField(String label) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8),
-      child: TextFormField(
-        controller: TextEditingController(text: jumlah_layanan.toString()),
-        keyboardType: TextInputType.number,
-        decoration: InputDecoration(
-          fillColor: Colors.white,
-          border: const OutlineInputBorder(),
-          labelText: label,
-          errorBorder: UnderlineInputBorder(
-            borderRadius: BorderRadius.circular(8.5),
-            borderSide: const BorderSide(color: Colors.red),
+      child: Row(
+        children: [
+          // TextFormField
+          Expanded(
+            child: TextFormField(
+              validator: (value) => Validator.validateJumlah(value: jumlah_layanan),
+              controller:
+                  TextEditingController(text: jumlah_layanan.toString()),
+              keyboardType: TextInputType.number,
+              decoration: InputDecoration(
+                fillColor: Colors.white,
+                border: const OutlineInputBorder(),
+                labelText: label,
+                errorBorder: UnderlineInputBorder(
+                  borderRadius: BorderRadius.circular(8.5),
+                  borderSide: const BorderSide(color: Colors.red),
+                ),
+              ),
+              onChanged: (value) {
+                setState(() {
+                  pilihan == 'Cuci Kiloan'
+                      ? jumlah_layanan = 1
+                      : jumlah_layanan = int.tryParse(value) ?? 1;
+                });
+              },
+            ),
           ),
-        ),
-        onChanged: (value) {
-          setState(() {
-            jumlah_layanan = int.tryParse(value) ?? 1;
-          });
-        },
+          pilihan == 'Cuci Kiloan'
+              ? const SizedBox()
+              : IconButton(
+                  icon: Icon(Icons.remove),
+                  onPressed: () {
+                    setState(() {
+                      if (jumlah_layanan > 1) {
+                        jumlah_layanan--;
+                      }
+                    });
+                  },
+                ),
+
+          pilihan == 'Cuci Kiloan'
+              ? const SizedBox()
+              : IconButton(
+                  icon: Icon(Icons.add),
+                  onPressed: () {
+                    setState(() {
+                      jumlah_layanan++;
+                    });
+                  },
+                ),
+        ],
       ),
     );
   }
+
+  // Widget buildNumberField(String label) {
+  //   return Padding(
+  //     padding: const EdgeInsets.symmetric(vertical: 8),
+  //     child: TextFormField(
+  //       controller: TextEditingController(text: jumlah_layanan.toString()),
+  //       keyboardType: TextInputType.number,
+  //       decoration: InputDecoration(
+  //         fillColor: Colors.white,
+  //         border: const OutlineInputBorder(),
+  //         labelText: label,
+  //         errorBorder: UnderlineInputBorder (
+  //           borderRadius: BorderRadius.circular(8.5),
+  //           borderSide: const BorderSide(color: Colors.red),
+  //         ),
+  //       ),
+
+  //       onChanged: (value) {
+  //         setState(() {
+  //           jumlah_layanan = int.tryParse(value) ?? 1;
+  //         });
+  //       },
+  //     ),
+  //   );
+  // }
 
   Widget buildPaymentDropdown() {
     return Padding(
@@ -247,5 +306,4 @@ class OrderState extends State<Order> {
       }
     });
   }
-
 }
