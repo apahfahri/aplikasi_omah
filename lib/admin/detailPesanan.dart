@@ -139,7 +139,7 @@ class _DetailPesananPageState extends State<DetailPesananPage> {
                             ),
                             hintText: 'Masukkan harga',
                           ),
-                          enabled: _selectedStatus == 'Pesanan baru', 
+                          enabled: _selectedStatus == 'Pesanan baru', // Disable if status is not "Siap dijemput"
                           onChanged: (value) {
                             setState(() {
                               totalHarga = (int.tryParse(value) ?? 0) * (int.tryParse(pesanan.jumlah_layanan.toString()) ?? 0);
