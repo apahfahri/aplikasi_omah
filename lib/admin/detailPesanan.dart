@@ -19,9 +19,10 @@ class _DetailPesananPageState extends State<DetailPesananPage> {
   // Controller untuk input harga
   final TextEditingController _priceController = TextEditingController();
 
-  // Variabel untuk status dan kurir
+  // Variabel untuk status, kurir, dan tanggal pengantaran
   late String _selectedStatus;
   late String _selectedKurir;
+  DateTime? _selectedDate;
 
   // Opsi status dan kurir
   final List<String> _statusOptions = [
@@ -46,6 +47,25 @@ class _DetailPesananPageState extends State<DetailPesananPage> {
 
     // Set nilai awal untuk harga di controller
     _priceController.text = widget.pesanan.total_harga?.toString() ?? '';
+
+    // Set nilai awal untuk tanggal pengantaran jika sudah ada
+    _selectedDate = widget.pesanan.tgl_pengantaran != null
+        ? DateTime.tryParse(widget.pesanan.tgl_pengantaran!)
+        : null;
+  }
+
+  Future<void> _selectDate(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: _selectedDate ?? DateTime.now(),
+      firstDate: DateTime.now(),
+      lastDate: DateTime(2101),
+    );
+    if (picked != null && picked != _selectedDate) {
+      setState(() {
+        _selectedDate = picked;
+      });
+    }
   }
 
   @override
@@ -204,6 +224,26 @@ class _DetailPesananPageState extends State<DetailPesananPage> {
                   ),
                   const Divider(height: 24),
                   const Text(
+                    'Tanggal Pengantaran',
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
+                  Row(
+                    children: [
+                      Text(
+                        _selectedDate != null
+                            ? '${_selectedDate!.toLocal()}'.split(' ')[0]
+                            : 'Belum dipilih',
+                        style: const TextStyle(fontSize: 16),
+                      ),
+                      const Spacer(),
+                      ElevatedButton(
+                        onPressed: () => _selectDate(context),
+                        child: const Text('Pilih Tanggal'),
+                      ),
+                    ],
+                  ),
+                  const Divider(height: 24),
+                  const Text(
                     'Total Harga',
                     style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                   ),
@@ -228,6 +268,18 @@ class _DetailPesananPageState extends State<DetailPesananPage> {
                     appid,
                     pesanan.id,
                   );
+
+                  if (_selectedDate != null) {
+                    await ds.updateId(
+                      'tgl_pengantaran',
+                      _selectedDate.toString(),
+                      token,
+                      project,
+                      'pesanan',
+                      appid,
+                      pesanan.id,
+                    );
+                  }
 
                   if (mounted) {
                     Navigator.pop(context, true); // Kembali ke halaman sebelumnya

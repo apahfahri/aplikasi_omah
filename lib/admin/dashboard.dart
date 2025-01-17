@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:aplikasi_omah/admin/detailPesanan.dart';
 import 'package:aplikasi_omah/admin/kurir.dart';
+import 'package:aplikasi_omah/admin/pesananSelesai.dart';
 import 'package:aplikasi_omah/util/ETTER/model/pesanan_model.dart';
 import 'package:aplikasi_omah/util/ETTER/restapi/config.dart';
 import 'package:aplikasi_omah/util/fire_auth.dart';
@@ -137,25 +138,35 @@ class _DashboardState extends State<Dashboard> {
               },
             ),
             ListTile(
-              leading: Icon(Icons.bar_chart),
-              title: Text('Analisis'),
+              leading: Icon(Icons.bar_chart_rounded),
+              title: Text('Analisis Riwayat'),
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => AnalisisPage()),
+                  MaterialPageRoute(builder: (context) => PesananSelesaiPage()),
                 );
               },
             ),
-            ListTile(
-              leading: Icon(Icons.people),
-              title: Text('Kurir'),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => KurirPage()),
-                );
-              },
-            ),
+            // ListTile(
+            //   leading: Icon(Icons.bar_chart),
+            //   title: Text('Analisis'),
+            //   onTap: () {
+            //     Navigator.push(
+            //       context,
+            //       MaterialPageRoute(builder: (context) => AnalisisPage()),
+            //     );
+            //   },
+            // ),
+            // ListTile(
+            //   leading: Icon(Icons.people),
+            //   title: Text('Kurir'),
+            //   onTap: () {
+            //     Navigator.push(
+            //       context,
+            //       MaterialPageRoute(builder: (context) => KurirPage()),
+            //     );
+            //   },
+            // ),
             ListTile(
               leading: Icon(Icons.logout),
               title: Text('Logout'),
