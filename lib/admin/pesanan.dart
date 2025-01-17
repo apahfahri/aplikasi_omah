@@ -9,7 +9,7 @@ import 'package:flutter/material.dart';
 
 class PesananPage extends StatefulWidget {
   const PesananPage({super.key});
-  
+
   @override
   _PesananState createState() => _PesananState();
 }
@@ -17,35 +17,54 @@ class PesananPage extends StatefulWidget {
 class _PesananState extends State<PesananPage> {
   DataService ds = DataService();
   late User currentUser;
-  
+
   List data = [];
   List<PesananModel> pesanan = [];
+  List<PesananModel> filteredPesanan = [];
 
   // List<PesananModel> orders = [];
   String searchQuery = "";
+  String selectedSort = 'Semua';
 
   selectAll() async {
     data = jsonDecode(await ds.selectAll(token, project, 'pesanan', appid));
-    pesanan = data.map((e) => PesananModel.fromJson(e)).toList();
+    List<PesananModel> allPesanan =
+        data.map((e) => PesananModel.fromJson(e)).toList();
+    pesanan =
+        allPesanan.where((item) => item.status_pesanan != 'Selesai').toList();
+    filteredPesanan = pesanan;
 
     setState(() {
       pesanan = pesanan;
     });
   }
 
-  selectFiltered() async {
-    data = jsonDecode(await ds.selectWhere(
-        token, project, 'pesanan', appid, 'status_pesanan', 'Pesanan Baru'));
-    pesanan = data.map((e) => PesananModel.fromJson(e)).toList();
+  void searchPesanan(String query) {
+    List<PesananModel> searchResult = pesanan.where((item) {
+      return item.pelanggan.toLowerCase().contains(query.toLowerCase()) ||
+          item.jenis_layanan.toLowerCase().contains(query.toLowerCase()) ||
+          item.status_pesanan.toLowerCase().contains(query.toLowerCase());
+    }).toList();
 
     setState(() {
-      pesanan = pesanan;
+      searchQuery = query;
+      filteredPesanan = searchResult;
     });
   }
 
-  Future reload(dynamic value) async {
+  void sortPesanan(String status) {
+    List<PesananModel> sortedResult;
+    if (status == 'Semua') {
+      sortedResult = pesanan;
+    } else {
+      sortedResult = pesanan
+          .where((item) => item.status_pesanan.toLowerCase() == status.toLowerCase())
+          .toList();
+    }
+
     setState(() {
-      selectAll();
+      selectedSort = status;
+      filteredPesanan = sortedResult;
     });
   }
 
@@ -87,6 +106,9 @@ class _PesananState extends State<PesananPage> {
               children: [
                 Expanded(
                   child: TextField(
+                    onChanged: (value) {
+                      searchPesanan(value);
+                    },
                     decoration: InputDecoration(
                       prefixIcon: const Icon(Icons.search),
                       hintText: 'Search',
@@ -99,23 +121,36 @@ class _PesananState extends State<PesananPage> {
                     ),
                   ),
                 ),
-                const SizedBox(width: 10),
-                ElevatedButton(
-                  onPressed: () {},
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.white,
-                    elevation: 1,
-                  ),
-                  child: const Text(
-                    'Sort',
-                    style: TextStyle(color: Colors.black),
-                  ),
+                const SizedBox(width: 5),
+                DropdownButton<String>(
+                  value: selectedSort,
+                  items: <String>[
+                    'Semua',
+                    'Siap dijemput',
+                    'Pesanan diproses',
+                    'Sedang dicuci',
+                    'Sedang dijemur',
+                    'Sedang disetrika',
+                    'Siap diantar'
+                  ].map((String value) {
+                    return DropdownMenuItem<String>(
+                      value: value,
+                      child: Text(
+                        value,
+                        style: const TextStyle(fontSize: 10),),
+                    );
+                  }).toList(),
+                  onChanged: (value) {
+                    sortPesanan(value!);
+                  },
+                  isDense: true,
+                  style: const TextStyle(fontSize: 10),
                 ),
               ],
             ),
             const SizedBox(height: 20),
             Expanded(
-              child: pesanan.isEmpty
+              child: filteredPesanan.isEmpty
                   ? const Center(
                       child: Text(
                         'Tidak ada pesanan yang terkonfirmasi.',
@@ -123,57 +158,73 @@ class _PesananState extends State<PesananPage> {
                       ),
                     )
                   : ListView.builder(
-                      itemCount: pesanan.length,
+                      itemCount: filteredPesanan.length,
                       itemBuilder: (context, index) {
-                        final item = pesanan[index];
-                        return Container(
-                          margin: const EdgeInsets.only(bottom: 10),
-                          padding: const EdgeInsets.all(12),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    '#ID ${item.pelanggan ?? 'N/A'}',
-                                    style: const TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.grey,
-                                    ),
+                        final item = filteredPesanan[index];
+                        return GestureDetector(
+                          onTap: () async {
+                            final result = await Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => DetailPesananPage(id: item.id),
+                              ),
+                            );
+                            if (result == true) {
+                              selectAll();
+                            }
+                          },
+                          child: Container(
+                            margin: const EdgeInsets.only(bottom: 10),
+                            padding: const EdgeInsets.all(12),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(20),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.grey.withOpacity(0.2),
+                                  spreadRadius: 0.3,
+                                  blurRadius: 2,
+                                  offset: const Offset(0, 2),
+                                ),
+                              ],
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  '${item.pelanggan ?? 'N/A'}',
+                                  style: const TextStyle(
+                                    fontSize: 16.0,  
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black,
                                   ),
-                                  GestureDetector(
-                                    onTap: () {
-                                       Navigator.push(
-                                         context,
-                                         MaterialPageRoute(
-                                           builder: (context) => DetailPesananPage(id: item.id),
-                                         ),
-                                       );
-                                    },
-                                    child: const Text(
-                                      'Detail',
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.blue,
+                                ),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      '${item.jenis_layanan ?? 'N/A'}',
+                                      style: const TextStyle(
+                                        fontSize: 12.0,  
+                                        color: Colors.black,
                                       ),
                                     ),
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(height: 5),
-                              Text(
-                                'Status: ${item.status_pesanan ?? 'N/A'}',
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.grey,
+                                    const Icon(
+                                      Icons.arrow_forward_ios_rounded,
+                                      color: Colors.blue,
+                                    ),
+                                  ],
                                 ),
-                              ),
-                            ],
+                                const SizedBox(height: 5),
+                                Text(
+                                  '${item.status_pesanan ?? 'N/A'}',
+                                  style: const TextStyle(
+                                    fontSize: 12.0,  
+                                    color: Colors.blue,
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         );
                       },

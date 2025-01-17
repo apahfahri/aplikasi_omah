@@ -73,14 +73,16 @@ class _DetailPesananPageState extends State<DetailPesananPage> {
             final pesanan = snapshot.data!;
 
             // Calculate the total price dynamically based on user input
-            num totalHarga = (int.tryParse(_priceController.text) ?? 0) * (int.tryParse(pesanan.jumlah_layanan.toString()) ?? 0);
+            num totalHarga = (int.tryParse(_priceController.text) ?? 0) *
+                (int.tryParse(pesanan.jumlah_layanan.toString()) ?? 0);
 
             return SingleChildScrollView(
               padding: const EdgeInsets.all(16.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('No: ${pesanan.id}', style: const TextStyle(fontSize: 16)),
+                  Text('No: ${pesanan.id}',
+                      style: const TextStyle(fontSize: 16)),
                   const SizedBox(height: 16),
                   Container(
                     padding: const EdgeInsets.all(16),
@@ -101,7 +103,8 @@ class _DetailPesananPageState extends State<DetailPesananPage> {
                         const SizedBox(height: 8),
                         Text(
                           pesanan.alamat ?? 'Alamat tidak tersedia',
-                          style: const TextStyle(fontSize: 14, color: Colors.grey),
+                          style:
+                              const TextStyle(fontSize: 14, color: Colors.grey),
                         ),
                         const Divider(height: 24),
                         const Text(
@@ -112,9 +115,10 @@ class _DetailPesananPageState extends State<DetailPesananPage> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text(pesanan.jenis_layanan ?? 'Jenis pesanan tidak tersedia'),
+                            Text(pesanan.jenis_layanan ??
+                                'Jenis pesanan tidak tersedia'),
                             Text(
-                              '${pesanan.jumlah_layanan ?? 'N/A'}', 
+                              '${pesanan.jumlah_layanan ?? 'N/A'}',
                               style: const TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.bold,
@@ -139,10 +143,14 @@ class _DetailPesananPageState extends State<DetailPesananPage> {
                             ),
                             hintText: 'Masukkan harga',
                           ),
-                          enabled: _selectedStatus == 'Pesanan baru', // Disable if status is not "Siap dijemput"
+                          enabled: _selectedStatus ==
+                              'Pesanan baru', // Disable if status is not "Siap dijemput"
                           onChanged: (value) {
                             setState(() {
-                              totalHarga = (int.tryParse(value) ?? 0) * (int.tryParse(pesanan.jumlah_layanan.toString()) ?? 0);
+                              totalHarga = (int.tryParse(value) ?? 0) *
+                                  (int.tryParse(
+                                          pesanan.jumlah_layanan.toString()) ??
+                                      0);
                             });
                           },
                         ),
@@ -153,7 +161,9 @@ class _DetailPesananPageState extends State<DetailPesananPage> {
                               fontSize: 16, fontWeight: FontWeight.bold),
                         ),
                         DropdownButton<String>(
-                          value: _statusOptions.contains(_selectedStatus) ? _selectedStatus : _statusOptions.first,
+                          value: _statusOptions.contains(_selectedStatus)
+                              ? _selectedStatus
+                              : _statusOptions.first,
                           isExpanded: true,
                           onChanged: (String? newValue) {
                             setState(() {
@@ -174,7 +184,9 @@ class _DetailPesananPageState extends State<DetailPesananPage> {
                               fontSize: 16, fontWeight: FontWeight.bold),
                         ),
                         DropdownButton<String>(
-                          value: _kurirOptions.contains(_selectedKurir) ? _selectedKurir : _kurirOptions.first,
+                          value: _kurirOptions.contains(_selectedKurir)
+                              ? _selectedKurir
+                              : _kurirOptions.first,
                           isExpanded: true,
                           onChanged: (String? newValue) {
                             setState(() {
@@ -195,7 +207,7 @@ class _DetailPesananPageState extends State<DetailPesananPage> {
                               fontSize: 16, fontWeight: FontWeight.bold),
                         ),
                         Text(
-                          'Rp. $totalHarga', 
+                          'Rp. $totalHarga',
                           style: const TextStyle(fontWeight: FontWeight.bold),
                         ),
                       ],
@@ -204,9 +216,8 @@ class _DetailPesananPageState extends State<DetailPesananPage> {
                   const SizedBox(height: 24),
                   Center(
                     child: ElevatedButton(
-                      onPressed: () {
-                        // Update pesanan total_harga in database
-                        ds.updateId(
+                      onPressed: () async {
+                        await ds.updateId(
                           'total_harga',
                           totalHarga.toString(),
                           token,
@@ -216,8 +227,7 @@ class _DetailPesananPageState extends State<DetailPesananPage> {
                           pesanan.id,
                         );
 
-                        // Update the status
-                        ds.updateId(
+                        await ds.updateId(
                           'status_pesanan',
                           _selectedStatus,
                           token,
@@ -227,8 +237,9 @@ class _DetailPesananPageState extends State<DetailPesananPage> {
                           pesanan.id,
                         );
 
-                        // After saving, go back to the previous page
-                        Navigator.pop(context);
+                        if (mounted) {
+                          Navigator.pop(context, true);
+                        }
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.lightBlue,
