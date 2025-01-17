@@ -218,14 +218,14 @@ class _DashboardState extends State<Dashboard> {
                     ),
                   ],
                 )),
-            SizedBox(height: 20),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                _buildButton('Total Pesanan', Colors.lightBlueAccent, () {}),
-                _buildButton(' Total Income', Colors.lightBlueAccent, () {}),
-              ],
-            ),
+            // SizedBox(height: 20),
+            // Row(
+            //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            //   children: [
+            //     _buildButton('Total Pesanan', Colors.lightBlueAccent, () {}),
+            //     _buildButton(' Total Income', Colors.lightBlueAccent, () {}),
+            //   ],
+            // ),
             const SizedBox(height: 10),
             Expanded(
               child: SingleChildScrollView(
