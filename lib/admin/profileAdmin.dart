@@ -1,10 +1,13 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:aplikasi_omah/util/ETTER/restapi/config.dart';
+import 'package:aplikasi_omah/util/ETTER/restapi/restapi.dart';
+
 
 class ProfileAdminPage extends StatelessWidget {
-  final User? Admin;
+  final User Admin;
 
-  ProfileAdminPage({this.Admin});
+  ProfileAdminPage({super.key, required this.Admin});
 
   @override
   Widget build(BuildContext context) {
