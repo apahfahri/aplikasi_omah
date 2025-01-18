@@ -1,6 +1,33 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-class ProfilKurirPage extends StatelessWidget {
+class ProfilKurirPage extends StatefulWidget {
+  final User user;
+  const ProfilKurirPage({super.key, required this.user});
+
+  @override
+  ProfilKurirPageState createState() => ProfilKurirPageState();
+}
+
+class ProfilKurirPageState extends State<ProfilKurirPage> {
+  late User currentUser;
+
+  @override
+  void initState() {
+    currentUser = widget.user;
+    super.initState();
+  }
+
+  Future<void> _logout() async {
+    try {
+      await FirebaseAuth.instance.signOut();
+      Navigator.pushReplacementNamed(context, 'login_screen');
+    } catch (e) {
+      print('Error logging out: $e');
+    }
+
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -19,6 +46,12 @@ class ProfilKurirPage extends StatelessWidget {
           style: TextStyle(color: Colors.black),
         ),
         centerTitle: true,
+        actions: [
+          IconButton(
+            onPressed: _logout,
+            icon: Icon(Icons.logout),
+          ),
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -57,7 +90,7 @@ class ProfilKurirPage extends StatelessWidget {
                             ),
                           ),
                           Text(
-                            'Lili',
+                            currentUser.displayName.toString(),
                             style: TextStyle(
                               fontSize: 14,
                               fontWeight: FontWeight.w600,
@@ -70,14 +103,14 @@ class ProfilKurirPage extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            'Username',
+                            'Email',
                             style: TextStyle(
                               fontSize: 14,
                               fontWeight: FontWeight.w400,
                             ),
                           ),
                           Text(
-                            'Kurir 1',
+                            currentUser.email.toString(),
                             style: TextStyle(
                               fontSize: 14,
                               fontWeight: FontWeight.w600,
@@ -97,7 +130,8 @@ class ProfilKurirPage extends StatelessWidget {
                             ),
                           ),
                           Text(
-                            '0826265361235',
+                            currentUser.phoneNumber ??
+                                'tidak ada no telepon',
                             style: TextStyle(
                               fontSize: 14,
                               fontWeight: FontWeight.w600,
@@ -177,29 +211,29 @@ class ProfilKurirPage extends StatelessWidget {
             ),
             SizedBox(height: 16),
             // Tombol Logout
-            ElevatedButton(
-              onPressed: () {
-                // Fungsi logout
-                // Biasanya Anda akan melakukan proses seperti menghapus token atau mengarahkan ke halaman login
-                // Misalnya: Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => LoginPage()));
+            // ElevatedButton(
+            //   onPressed: () {
+            //     // Fungsi logout
+            //     // Biasanya Anda akan melakukan proses seperti menghapus token atau mengarahkan ke halaman login
+            //     // Misalnya: Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => LoginPage()));
 
-                print("Logout berhasil");
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.red, // Warna tombol logout
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10), // Rounded corners
-                ),
-                padding: EdgeInsets.symmetric(vertical: 15), // Padding tombol
-              ),
-              child: Text(
-                'Logout',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
+            //     print("Logout berhasil");
+            //   },
+            //   style: ElevatedButton.styleFrom(
+            //     backgroundColor: Colors.red, // Warna tombol logout
+            //     shape: RoundedRectangleBorder(
+            //       borderRadius: BorderRadius.circular(10), // Rounded corners
+            //     ),
+            //     padding: EdgeInsets.symmetric(vertical: 15), // Padding tombol
+            //   ),
+            //   child: Text(
+            //     'Logout',
+            //     style: TextStyle(
+            //       fontSize: 16,
+            //       fontWeight: FontWeight.bold,
+            //     ),
+            //   ),
+            // ),
           ],
         ),
       ),
